@@ -1,0 +1,4978 @@
+openapi: 3.0.1
+info:
+  title: SS&C API
+  description: API Contract to integrate with SS&C Hubwise
+  version: 2.0.0-Saltus
+  contact:
+    email: apidevs@sscinc.com
+    name: SS&C Hubwise API Support  
+    url: https://docs.portal.hubwise.co.uk/
+  license:
+    name: SS&C API Restricted License
+    url: https://docs.portal.hubwise.co.uk/api-restricted-license.pdf
+servers:
+  - url: 'https://rest-sb.hubwise.co.uk/api/v2'
+    description: Sandbox environment
+  - url: 'https://rest-qd.hubwise.co.uk/api/v2'
+    description: Pilot/UAT environment
+  - url: 'https://rest.hubwise.co.uk/api/v2'
+    description: Live environment
+
+tags:
+  - name: Account
+    description: >-
+      Enables the creation, retrieval, modification, and removal of investment accounts within the SS&C Hubwise platform.
+
+
+      GIA, SIPP and other account types are supported. 
+  - name: Investor
+    description: >
+      Enables the creation, retrieval, modification, and removal of investor records within the SS&C Hubwise platform. 
+      
+      
+      Individual, Corporate and Trust investor types are supported.
+  - name: Declarations
+    description: > 
+    
+      Handles regulatory declarations and compliance data.
+
+security:
+  - bearer-token: []
+  - x-api-key: []
+
+paths:
+  
+  /investors:
+    post:
+      tags:
+        - Investor
+      summary: Create an Investor
+      description: >
+        Allows the creation of a specific investor, an individual entity. It
+        supports the creation of Individual, Corporate and  Trust investors. The
+        required data varies depending on the investor type and includes the
+        investor's core profile information, contact details, 1 or more
+        addresses and 1 or more territorial profiles.
+
+        This endpoint should be used when creating new investor records. The Get
+        Declaration Templates API can be used to identify required declarations
+        that must be included in the request message. An investor can have a
+        maximum of 10 addresses, 5 nationalities and tax residencies. The
+        investor record id returned in the response payload will be required for
+        investor and account maintenance. The endpoint must be called for each
+        investor
+        record.                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        This endpoint should be used when creating new investor records. The Get
+        Declaration Templates API can be used to identify required declarations
+        that must be included in the request message. An investor can have a
+        maximum of 5 active addresses. The investor record id returned in the
+        response payload will be required for investor and account maintenance.
+        The endpoint must be called for each investor record.
+      operationId: createInvestor
+      parameters:
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestorModel'
+            examples:
+              Ex1: 
+                summary: Create an Investor
+                value:
+                  {
+                    "adviserId": "",
+                    "type": "INDIVIDUAL",
+                    "individual": {
+                      "title": "OTHER",
+                      "titleOtherValue": "General",
+                      "firstName": "Sam",
+                      "middleName": "John",
+                      "surname": "Smith",
+                      "dateOfBirth": "2000-02-20",
+                      "gender": "MALE",
+                      "maritalStatus": "MARRIED",
+                      "incomeAndInvestment": {
+                        "occupation": "OTHER",
+                        "occupationOtherValue": "Management Consultant",
+                        "industry": "OTHER",
+                        "industryOtherValue": "Consulting Services",
+                        "annualIncome": "FROM_50K_TO_75K",
+                        "investmentReason": "GROW_WEALTH",
+                        "investmentAgreedInPerson": true
+                      },
+                      "allowance": {},
+                      "territorialProfile": {
+                        "nationalities": [
+                          {
+                            "countryCode": "GB",
+                            "primary": true
+                          }
+                        ],
+                        "taxResidencies": [
+                          {
+                            "countryCode": "GB",
+                            "primary": true,
+                            "tin": "AC123456C",
+                            "lei": "5493001KJTIIGC8Y1R12"
+                          }
+                        ]
+                      },
+                      "contactDetails": {
+                        "contactPhone": "01619465555",
+                        "homePhone": "01619464444",
+                        "mobilePhone": "07877156340",
+                        "email": "john.doe@outlook.com"
+                      },
+                      "notificationsPreferences": {
+                        "disableEmails": false,
+                        "disableSms": false
+                      }
+                    },
+                    "addresses": [
+                      {
+                        "primary": true,
+                        "premisesIdentifier": "12",
+                        "line1": "Rosewood Cottage",
+                        "line2": "Elm Street",
+                        "town": "Hightown",
+                        "county": "Lancashire",
+                        "postCode": "HT3 4AB",
+                        "countryCode": "GB"
+                      }
+                    ]
+                  }
+        required: true
+      responses:
+        '201':
+          description: Investor created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestorModel'
+              examples:
+                Ex1:
+                  summary: create an investor
+                  value:
+                    {
+                      "id": "HWI04003219",
+                      "tenantId": "HUBWISE",
+                      "adviserId": "E007290",
+                      "type": "INDIVIDUAL",
+                      "status": "NEW",
+                      "individual": {
+                        "title": "OTHER",
+                        "titleOtherValue": "General",
+                        "firstName": "Sam",
+                        "middleName": "John",
+                        "surname": "Smith",
+                        "dateOfBirth": "2000-02-20",
+                        "gender": "MALE",
+                        "maritalStatus": "MARRIED",
+                        "incomeAndInvestment": {
+                          "occupation": "OTHER",
+                          "occupationOtherValue": "Management Consultant",
+                          "industry": "OTHER",
+                          "industryOtherValue": "Consulting Services",
+                          "annualIncome": "FROM_50K_TO_75K",
+                          "investmentReason": "GROW_WEALTH",
+                          "investmentAgreedInPerson": true,
+                          "auditInfo": {
+                            "createdByUser": "E004490",
+                            "createdOn": "2026-02-16T19:31:19Z",
+                            "changedByUser": "E004490",
+                            "changedOn": "2026-02-16T19:31:19Z"
+                          }
+                        },
+                        "allowance": {
+                          "remainingAllowance": 20000,
+                          "subscribedAmount": 0
+                        },
+                        "territorialProfile": {
+                          "nationalities": [
+                            {
+                              "id": 1,
+                              "countryCode": "GB",
+                              "primary": true,
+                              "auditInfo": {
+                                "createdByUser": "E004490",
+                                "createdOn": "2026-02-16T19:31:19Z",
+                                "changedByUser": "E004490",
+                                "changedOn": "2026-02-16T19:31:19Z"
+                              }
+                            }
+                          ],
+                          "taxResidencies": [
+                            {
+                              "id": 1,
+                              "countryCode": "GB",
+                              "primary": true,
+                              "tin": "AC123456C",
+                              "lei": "5493001KJTIIGC8Y1R12",
+                              "auditInfo": {
+                                "createdByUser": "E004490",
+                                "createdOn": "2026-02-16T19:31:19Z",
+                                "changedByUser": "E004490",
+                                "changedOn": "2026-02-16T19:31:19Z"
+                              }
+                            }
+                          ]
+                        },
+                        "contactDetails": {
+                          "contactPhone": "01619465555",
+                          "homePhone": "01619464444",
+                          "mobilePhone": "07877156340",
+                          "email": "john.doe@outlook.com"
+                        },
+                        "notificationsPreferences": {
+                          "disableEmails": false,
+                          "disableSms": false
+                        },
+                        "auditInfo": {
+                          "createdByUser": "E004490",
+                          "createdOn": "2026-02-16T19:31:19Z",
+                          "changedByUser": "E004490",
+                          "changedOn": "2026-02-16T19:31:19Z"
+                        }
+                      },
+                      "addresses": [
+                        {
+                          "id": 1,
+                          "primary": true,
+                          "premisesIdentifier": "12",
+                          "line1": "Rosewood Cottage",
+                          "line2": "Elm Street",
+                          "town": "Hightown",
+                          "county": "Lancashire",
+                          "postCode": "HT3 4AB",
+                          "countryCode": "GB",
+                          "auditInfo": {
+                            "createdByUser": "E004490",
+                            "createdOn": "2026-02-16T19:31:19Z",
+                            "changedByUser": "E004490",
+                            "changedOn": "2026-02-16T19:31:19Z"
+                          }
+                        }
+                      ],
+                      "auditInfo": {
+                        "createdByUser": "E004490",
+                        "createdOn": "2026-02-16T19:31:19Z",
+                        "changedByUser": "E004490",
+                        "changedOn": "2026-02-16T19:31:19Z"
+                      }
+                    }
+              
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+  /investors/{investorId}:
+    get:
+      tags:
+        - Investor
+      summary: Retrieve an investor by providing the unique investor identifier
+      description: |2
+                Retrieves the full details of a specific investor, an individual entity, using their unique SS&C Hubwise Investor ID generated when an investor is created.
+                This endpoint should be used when displaying detailed investor information. The response includes the investor’s core profile information, contact details, address records, territorial profile, and type-specific attributes for Individual, Corporate and Trust  investors.
+                Only investors that the requester is authorised to access will be returned.
+                If the investor does not exist or the requester lacks permission, an appropriate error response is returned.  The endpoint must be called for each investor record. Addresses that have been soft deleted for an investor will not be returned.
+      operationId: getInvestorById
+      parameters:
+        - name: investorId
+          in: path
+          description: Investor Id
+          required: true
+          schema:
+            type: string
+          example: HWI04003219
+      responses:
+        '200':
+          description: Investor retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestorModel'
+              examples:
+                Ex1:
+                  summary: Retrieve an investor by ID
+                  value:
+                    {
+                      "id": "HWI04003219",
+                      "tenantId": "HUBWISE",
+                      "adviserId": "E007290",
+                      "type": "INDIVIDUAL",
+                      "status": "NEW",
+                      "individual": {
+                        "title": "OTHER",
+                        "titleOtherValue": "General",
+                        "firstName": "Sam",
+                        "middleName": "John",
+                        "surname": "Smith",
+                        "dateOfBirth": "2000-02-20",
+                        "gender": "MALE",
+                        "maritalStatus": "MARRIED",
+                        "incomeAndInvestment": {
+                          "occupation": "OTHER",
+                          "occupationOtherValue": "Management Consultant",
+                          "industry": "OTHER",
+                          "industryOtherValue": "Consulting Services",
+                          "annualIncome": "FROM_50K_TO_75K",
+                          "investmentReason": "GROW_WEALTH",
+                          "investmentAgreedInPerson": true,
+                          "auditInfo": {
+                            "createdByUser": "E004490",
+                            "createdOn": "2026-02-16T19:31:19Z",
+                            "changedByUser": "E004490",
+                            "changedOn": "2026-02-16T19:31:19Z"
+                          }
+                        },
+                        "allowance": {
+                          "remainingAllowance": 20000,
+                          "subscribedAmount": 0
+                        },
+                        "territorialProfile": {
+                          "nationalities": [
+                            {
+                              "id": 1,
+                              "countryCode": "GB",
+                              "primary": true,
+                              "auditInfo": {
+                                "createdByUser": "E004490",
+                                "createdOn": "2026-02-16T19:31:19Z",
+                                "changedByUser": "E004490",
+                                "changedOn": "2026-02-16T19:31:19Z"
+                              }
+                            }
+                          ],
+                          "taxResidencies": [
+                            {
+                              "id": 1,
+                              "countryCode": "GB",
+                              "primary": true,
+                              "tin": "AC123456C",
+                              "lei": "5493001KJTIIGC8Y1R12",
+                              "auditInfo": {
+                                "createdByUser": "E004490",
+                                "createdOn": "2026-02-16T19:31:19Z",
+                                "changedByUser": "E004490",
+                                "changedOn": "2026-02-16T19:31:19Z"
+                              }
+                            }
+                          ]
+                        },
+                        "contactDetails": {
+                          "contactPhone": "01619465555",
+                          "homePhone": "01619464444",
+                          "mobilePhone": "07877156340",
+                          "email": "john.doe@outlook.com"
+                        },
+                        "notificationsPreferences": {
+                          "disableEmails": false,
+                          "disableSms": false
+                        },
+                        "auditInfo": {
+                          "createdByUser": "E004490",
+                          "createdOn": "2026-02-16T19:31:19Z",
+                          "changedByUser": "E004490",
+                          "changedOn": "2026-02-16T19:31:19Z"
+                        }
+                      },
+                      "addresses": [
+                        {
+                          "id": 1,
+                          "primary": true,
+                          "premisesIdentifier": "12",
+                          "line1": "Rosewood Cottage",
+                          "line2": "Elm Street",
+                          "town": "Hightown",
+                          "county": "Lancashire",
+                          "postCode": "HT3 4AB",
+                          "countryCode": "GB",
+                          "auditInfo": {
+                            "createdByUser": "E004490",
+                            "createdOn": "2026-02-16T19:31:19Z",
+                            "changedByUser": "E004490",
+                            "changedOn": "2026-02-16T19:31:19Z"
+                          }
+                        }
+                      ],
+                      "auditInfo": {
+                        "createdByUser": "E004490",
+                        "createdOn": "2026-02-16T19:31:19Z",
+                        "changedByUser": "E004490",
+                        "changedOn": "2026-02-16T19:31:19Z"
+                      }
+                    }
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /investors/{investorId}/vulnerabilities:
+    post:
+      tags:
+        - Investor
+      summary: Create investors characteristics of vulnerabilities
+      description: >
+        - Allows the creation of 1 or more characteristics of vulnerabilities
+        for a specific investor using their unique SS&C Hubwise Investor ID
+        which is
+
+        - generated when an investor is created. This is only applicable to an
+        investor type of Individual or Court Appointed Deputy.
+
+        - The characteristics of vulnerabilities endpoint should be used when
+        creating new characteristics of vulnerabilities records against an
+        existing
+
+        - investor card. Vulnerabilities and the associated service level must
+        be provided for each record. If a start date is not provided it will be
+
+        - defaulted to the current date.
+
+        - If declaration templates are required from the declaration API they
+        must be included in the request message. The endpoint must be called for
+
+        - each investor record.
+
+        - If the investor does not exist or the requester lacks permission, an
+        appropriate error response will be returned. Only investors that the
+        requester
+
+        - is authorised to access can be used. If characteristics of
+        vulnerabilities already exists aginst the investor, the update endpoint
+        needs to be used
+
+        - and an appropriate error response will be returned.
+      operationId: createVulnerabilities
+      parameters:
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: investorId
+          in: path
+          description: Investor Id
+          required: true
+          schema:
+            type: string
+          example: HW00013451A
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
+        required: true
+      responses:
+        '201':
+          description: Investor vulnerabilities created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /investors/{investorId}/correspondences:
+    post:
+      tags:
+        - Investor
+      summary: Create investors characteristics of vulnerabilities
+      description: >
+        - Allows the creation of 1 or more correspondences for a specific
+        investor using their unique SS&C Hubwise Investor ID which is generated
+        when
+
+        - an investor is created. This is only applicable to an investor type of
+        Individual or Court Appointed Deputy.
+
+        - The correspondences endpoint should be used when creating new
+        correspondence records against an existing investor record.
+
+        - Correspondences must be provided for each record. If a start date is
+        not provided it will be defaulted to the current date.
+
+        - If declaration templates are required from the declaration API they
+        must be included in the request message. The endpoint must be called for
+
+        - each investor record.
+
+        - If the investor does not exist or the requester lacks permission, an
+        appropriate error response will be returned. Only investors that the
+
+        - requester is authorised to access can be used. If correspondences
+        already exists against the investor, the update endpoint needs to be
+        used
+
+        - and an appropriate error response will be returned.
+      operationId: createVulnerabilities_1
+      parameters:
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: investorId
+          in: path
+          description: Investor Id
+          required: true
+          schema:
+            type: string
+          example: HW00013451A
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CorrespondenceChangeHeaderModel'
+        required: true
+      responses:
+        '201':
+          description: Investor vulnerability correspondences created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+  /accounts:
+    get:
+      tags:
+        - Account
+      summary: Search accounts
+      description: |2
+          This endpoint retrieves the full details of an account that the requester is authorised to access
+          - Supported Filters:
+            - `name` - Partial match on the account name (minimum 2 characters).
+            - `accountId`- Partial match on the account ID (minimum 2 characters).
+            - `investorId`- Exact match only.
+            - `status`- Exact match on account status (e.g. NEW, PENDING). Refer to the Model section for the full list of supported values.
+            - `sortColumn`- Allows sorting by any field (e.g. createdOnDate, name). See the Model section for the full list of sortable fields.
+          - Additional Features:
+            - `Pagination` - Limit and offset controls for navigating large result sets.
+            - `Sorting` - Sort results by any supported field.
+      operationId: searchAccounts
+      parameters:
+        - name: name
+          in: query
+          description: 'Filter accounts by name, this is a predictive search'
+          required: false
+          schema:
+            maxLength: 50
+            minLength: 2
+            type: string
+            description: 'Filter accounts by name, this is a predictive search'
+            example: HUB
+          example: HUB
+        - name: accountId
+          in: query
+          description: >-
+            Search using unique identifier of the account, this is a predictive
+            search
+          required: false
+          schema:
+            maxLength: 11
+            minLength: 2
+            type: string
+            description: >-
+              Search using unique identifier of the account, this is a
+              predictive search
+            example: HW00013451A
+          example: HW00013451A
+        - name: investorId
+          in: query
+          description: Investor ID linked to the account
+          required: false
+          schema:
+            maxLength: 11
+            minLength: 11
+            type: string
+            description: Investor ID linked to the account
+            example: INV12345678
+          example: INV12345678
+        - name: status
+          in: query
+          description: Status of the Account
+          required: false
+          schema:
+            pattern: NEW|DELETED|SUSPENDED|INCEPTED|PENDING
+            type: string
+            description: Status of the Account
+            example: NEW
+            enum:
+              - NEW
+              - DELETED
+              - SUSPENDED
+              - INCEPTED
+              - PENDING
+          example: NEW
+        - name: sortColumn
+          in: query
+          description: Column on which to sort data
+          required: false
+          schema:
+            pattern: createdOnDate|name|accountId|status|productId
+            type: string
+            description: Column on which to sort data
+            example: createdOnDate
+            enum:
+              - createdOnDate
+              - name
+              - accountId
+              - status
+              - productId
+          example: createdOnDate
+        - name: sortDirection
+          in: query
+          description: >-
+            Sort direction for results. Use 'ASC' for ascending or 'DESC' for
+            descending.
+          required: false
+          schema:
+            type: string
+            description: >-
+              Sort direction for results. Use 'ASC' for ascending or 'DESC' for
+              descending.
+            example: DESC
+            default: DESC
+            enum:
+              - ASC
+              - DESC
+          example: DESC
+        - name: pageIndex
+          in: query
+          description: Zero-based index of the page to retrieve (0 = first page).
+          required: false
+          schema:
+            minimum: 0
+            type: string
+            description: Zero-based index of the page to retrieve (0 = first page).
+            default: '0'
+        - name: pageSize
+          in: query
+          description: Number of records per page. Maximum allowed is 100
+          required: false
+          schema:
+            maximum: 50
+            minimum: 1
+            type: string
+            description: Number of records per page. Maximum allowed is 100
+            default: '10'
+      responses:
+        '200':
+          description: Accounts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAccountModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+    post:
+      tags:
+        - Account
+      summary: Create account
+      description: |2
+          - This endpoint allows the creation of a new account against investor(s) that the requester has access to.
+          - If `testMode=true`, simulates account creation but rolls back changes after validation.
+      operationId: createAccount
+      parameters:
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountModel'
+        required: true
+      responses:
+        '201':
+          description: Account created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}:
+    get:
+      tags:
+        - Account
+      summary: Get account by id
+      description: |2
+          - This endpoint retrieves the full details of an account using the unique `accountId`.
+          - The requester can only retrieve an account they are authorised to access.
+      operationId: getAccountById
+      parameters:
+        - name: accountId
+          in: path
+          description: Account ID
+          required: true
+          schema:
+            type: string
+          example: HW00013451A
+      responses:
+        '200':
+          description: Account retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}/bank-accounts:
+    post:
+      tags:
+        - Account
+      summary: Create bank account
+      description: |2
+          - Adds a bank account for the given `accountId`.
+          - Either a `sort code` and `account number`, or an `IBAN`, is required
+      operationId: createBankAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Investment Account ID
+          required: true
+          schema:
+            type: string
+          example: HW00014052A
+        - name: testMode
+          in: query
+          description: Enable test mode to simulate fee creation
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bank'
+        required: true
+      responses:
+        '201':
+          description: Bank account created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankDetails'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}/money-movements:
+    post:
+      tags:
+        - Account
+      summary: Create Money Movement
+      description: |2
+          - This endpoint allows the creation of a new money movement(s) against an account.
+          - If `testMode=true`, simulates account creation but rolls back changes after validation.
+      operationId: createMovements
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: string
+          example: HW00013567B
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Movement'
+        required: true
+      responses:
+        '200':
+          description: Money Movement(s) created successfully or redirect
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movement'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}/transfers:
+    post:
+      tags:
+        - Account
+      summary: Create transfer.
+      description: >-
+        This endpoint allows you to initiate the transfer of cash and assets
+        from another provider onto the platform. It supports both full and
+        partial cash transfers, as well as full in-specie transfers.Start by
+        retrieving a list of available counterparties and displaying them in a
+        dropdown menu within your application. The user can then select the
+        counterparty they wish to transfer from, and the associated code will be
+        included in the request. If the transfer involves a counterparty not
+        listed, the user can manually enter the counterparty’s name and address.
+      operationId: createTransfer
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: string
+          example: HW00013451A
+        - name: testMode
+          in: query
+          description: Enable test mode to simulate transfer creation
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccountTransferModel'
+        required: true
+      responses:
+        '200':
+          description: Transfers created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountTransferModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}/relationships:
+    post:
+      tags:
+        - Account
+      summary: Create relationship
+      description: >-
+        Creates a relationship to be associated with account. Note that this
+        does not create a pseudo investor entry onto our system.
+      operationId: createRelationship
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: string
+          example: HW00000122A
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipModel'
+      responses:
+        '200':
+          description: Relationship created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationshipModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+
+  /accounts/{accountId}/income-options:
+    post:
+      tags:
+        - Account
+      summary: Create relationship
+      description: >-
+        Creates a relationship to be associated with account. Note that this
+        does not create a pseudo investor entry onto our system.
+      operationId: createIncomeOptions
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: string
+          example: HW00000122A
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipModel'
+      responses:
+        '200':
+          description: Relationship created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationshipModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+  /accounts/{accountId}/fees:
+    post:
+      tags:
+        - Account
+      summary: Create account fees
+      description: |2
+         - This endpoint allows the creation of fee(s) against a single account an account using the unique `accountId`.
+         - The requester can only create the fees against an account they are authorised to access.
+         - Creates one or more Fee records for a specific account.
+         - If `testMode=true`, simulates account fee creation but rolls back changes after validation.
+      operationId: createAccountFee
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: string
+          example: HW00013567B
+        - name: testMode
+          in: query
+          description: Enable test mode to simulate fee creation
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Fee'
+        required: true
+      responses:
+        '201':
+          description: Account fee(s) created successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fee'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+  /accounts/{accountId}/activate:
+    post:
+      tags:
+        - Account
+      summary: Activate account
+      description: |2
+          - This endpoint allows you to activate an existing investor account with a `status=PENDING` using the `accountID` as a unique identifier.
+          - The requester can only update an account they are authorised to access.
+          - If `testMode=true`, simulates account activation but rolls back changes after validation..
+      operationId: activateAccount
+      parameters:
+        - name: testMode
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: accountId
+          in: path
+          description: Account ID
+          required: true
+          schema:
+            type: string
+          example: HW00013451A
+      responses:
+        '200':
+          description: Account activated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountModel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+  
+  /declarations:
+    get:
+      tags:
+        - Declarations
+      summary: Get Declaration Templates by Event
+      description: >
+        - Retrieve declaration templates for a given eventKey.
+
+        - Requires channel (`D2C` or `ADVISED`).
+
+        - Either (`eventKey + accountId`) OR (`eventKey + investorId`) must be
+        provided.
+      operationId: getDeclarationTemplates
+      parameters:
+        - name: eventKey
+          in: query
+          description: Event Key
+          required: true
+          schema:
+            type: string
+          example: ACCOUNT_ACTIVATION
+        - name: channel
+          in: query
+          description: Channel
+          required: true
+          schema:
+            type: string
+          example: D2C
+        - name: accountId
+          in: query
+          description: Unique identifier of the account.
+          required: false
+          schema:
+            type: string
+            description: Unique identifier of the account.
+            example: S3000000118
+          example: S3000000118
+        - name: investorId
+          in: query
+          description: Unique identifier of the investor.
+          required: false
+          schema:
+            type: string
+            description: Unique identifier of the investor.
+            example: S3I00008426
+          example: S3I00008426
+        - name: customerId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: platformId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: productId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sortColumn
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sortDirection
+          in: query
+          description: >-
+            Sort direction for results. Use 'ASC' for ascending or 'DESC' for
+            descending.
+          required: false
+          schema:
+            type: string
+            description: >-
+              Sort direction for results. Use 'ASC' for ascending or 'DESC' for
+              descending.
+            example: DESC
+            default: DESC
+            enum:
+              - ASC
+              - DESC
+          example: DESC
+        - name: pageIndex
+          in: query
+          description: Zero-based index of the page to retrieve (0 = first page).
+          required: false
+          schema:
+            minimum: 0
+            type: string
+            description: Zero-based index of the page to retrieve (0 = first page).
+            default: '0'
+        - name: pageSize
+          in: query
+          description: Number of records per page. Maximum allowed is 100
+          required: false
+          schema:
+            maximum: 50
+            minimum: 1
+            type: string
+            description: Number of records per page. Maximum allowed is 100
+            default: '10'
+      responses:
+        '200':
+          description: Declaration templates successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeclarationTemplateResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  summary: Validation Error
+                  description: ValidationError
+                  value:
+                    errorCode: HWA-EXCEPTION-001
+                    message: Validation Error(s) occurred.
+                    errors:
+                      - field: individual.contactDetails.email
+                        resource: /investors
+                        message: Invalid email format.
+        '401':
+          description: Unauthorized - Valid JWT required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Unauthorized:
+                  summary: Missing/invalid token
+                  description: Unauthorized
+                  value:
+                    errorCode: HWA-EXCEPTION-006
+                    message: Authentication process failed.
+                    errors:
+                      - field: Authentication
+                        resource: /swagger.html
+                        message: Authentication token is missing or invalid.
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Forbidden:
+                  summary: Access denied
+                  description: Forbidden
+                  value:
+                    errorCode: HWA-EXCEPTION-004
+                    message: Access denied.
+                    errors:
+                      - field: Authorization
+                        resource: /investors
+                        message: You do not have permission to access this resource.
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFound:
+                  summary: Resource not found
+                  description: NotFound
+                  value:
+                    errorCode: HWA-INVESTOR-001
+                    message: The requested resource could not be found.
+                    errors:
+                      - field: investorId
+                        resource: /investors/HWI00000000
+                        message: id 'HWI00000000' does not exist.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                TechnicalError:
+                  summary: Unexpected technical error
+                  description: TechnicalError
+                  value:
+                    errorCode: HWA-EXCEPTION-003
+                    message: An unexpected technical error occurred.
+                    errors:
+                      - resource: /investors
+                        message: Unexpected exception during processing.
+
+components:
+  schemas:
+    
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Application-specific error code that uniquely identifies the error.
+          example: HWA-EXCEPTION-001
+        message:
+          type: string
+          description: Human-readable error message providing more context about the error.
+          example: Validation Errors
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+      description: Represents a standard error response.
+    
+    ErrorDetail:
+      type: object
+      properties:
+        field:
+          type: string
+          description: 'The name of the field that caused the error, if applicable.'
+          example: email
+        resource:
+          type: string
+          description: The resource or entity associated with the error.
+          example: User
+        message:
+          type: string
+          description: Detailed error message related to the field or resource.
+          example: Email format is invalid
+      description: List of detailed errors for specific fields or conditions.
+
+    AccountModel:
+      required:
+        - currency
+        - entityType
+        - productId
+        - relatedInvestors
+        - type
+      type: object
+      properties:
+        accountId:
+          maxLength: 11
+          type: string
+          description: Id
+          format: string
+          readOnly: true
+          example: HW00013451A
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer Id
+          format: string
+          readOnly: true
+          example: HUBWISE
+        productId:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Product Id
+          format: string
+          example: GIA
+        entityType:
+          type: string
+          description: Entity Type
+          example: INDIVIDUAL
+          enum:
+            - INDIVIDUAL
+            - CORPORATE
+            - JOINT
+            - TRUST
+            - CLUB
+        type:
+          type: string
+          description: Type
+          example: ADVISED
+          enum:
+            - ADVISED
+            - DISCRETIONARY
+            - EXECUTIONONLY
+        currency:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Currency
+          format: string
+          example: GBP
+        marketSettlementCurrency:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Market Settlement Currency
+          format: string
+          example: GBP
+        category:
+          type: string
+          description: Category
+          example: INDIVIDUAL
+          enum:
+            - INDIVIDUAL
+            - PRIMARY
+            - SECONDARY
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Name
+          format: string
+          example: Mr Hub Wise Person
+        model:
+          $ref: '#/components/schemas/ModelHeader'
+        feeAccountId:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Fee Account Id
+          format: string
+          example: HW00000124A
+        externalReference:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: External Reference
+          format: string
+          example: EL1027305
+        adviserId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: adviserId
+          format: string
+          example: E273053
+        inceptionDate:
+          type: string
+          description: Inception Date
+          format: date
+          readOnly: true
+          example: '2025-04-28'
+        status:
+          type: string
+          description: status
+          readOnly: true
+          example: NEW
+          enum:
+            - NEW
+            - DELETED
+            - INCEPTED
+            - MIGRATING
+            - SUSPENDED
+            - FROZEN
+            - SUBMITTED_FOR_AUTHORIZATION
+            - DECEASED
+            - TRANSFERRING_OUT
+            - TRANSFERRING_IN
+            - TRADING_SUSPENDED
+            - MOVEMENTS_REJECTED
+            - PENSION_SHARING_ORDER
+            - PROBATE
+            - OVERSEAS
+            - AWAITING_FINAL_CTC
+            - PENDING
+            - PRE_AML
+            - REFERRED
+            - FAILED
+            - WAITING_FOR_DOCUMENTATION
+            - INTENTION_TO_CLOSE
+            - CLOSED
+            - ARCHIVED
+            - FEE_SENT
+            - FEE_RECEIVED
+            - SUB_ACC_TRANSFER
+            - TRANSFER_OUT_CASH
+            - NON_UK_RESIDENT
+        pensionDetails:
+          $ref: '#/components/schemas/AccountPensionModel'
+        relatedInvestors:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityLinkModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Account Model
+    
+    AccountPensionModel:
+      type: object
+      properties:
+        accountId:
+          maxLength: 11
+          type: string
+          description: Id
+          format: string
+          readOnly: true
+          example: HW00013451A
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer Id
+          format: string
+          readOnly: true
+          example: HUBWISE
+        employmentStatus:
+          maxLength: 30
+          type: string
+          description: Employment Status
+          example: OTHER
+          enum:
+            - EMPLOYED
+            - UNEMPLOYED
+            - SELFEMPLOYED
+            - STUDENT
+            - PENSIONER
+            - CHILD
+            - CARER
+            - CHILDCARER
+            - OTHER
+        declaredEmploymentStatus:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Declared Employment Status
+          format: string
+          example: Contractor
+        frequency:
+          type: string
+          description: Frequency
+          example: ANNUAL
+          enum:
+            - ANNUAL
+            - MONTHLY
+            - QUARTERLY
+            - HALF-YEARLY
+            - ONE-OFF
+        crystallisation:
+          type: boolean
+          description: Crystallisation
+          format: boolean
+          example: true
+        taxRelief:
+          maxLength: 1
+          minLength: 0
+          pattern: '[ABCDN]'
+          type: string
+          description: taxRelief
+          format: string
+          example: A
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - 'N'
+        sourceOfWealth:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Source Of Wealth
+          format: string
+          example: Salary
+        retirementAge:
+          maximum: 75
+          minimum: 30
+          maxLength: 3
+          type: integer
+          description: Retirement Age
+          format: int32
+          example: 75
+        grantedLifetimeAllowance:
+          type: boolean
+          description: grantedLifetimeAllowance
+          format: boolean
+          example: false
+        mpaaDeclaration:
+          type: boolean
+          description: MPAA Declaration
+          format: boolean
+          example: false
+        adviserId:
+          maxLength: 7
+          type: string
+          description: adviserId
+          format: string
+          readOnly: true
+        flexiAccessDate:
+          type: string
+          description: Flexi-access Date
+          format: date
+          example: '2025-04-28'
+        retirementDate:
+          type: string
+          description: Retirement Date
+          format: date
+          readOnly: true
+          example: '2050-06-04'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Pension-related details
+    
+    PageAccountModel:
+      type: object
+      properties:
+        content:
+          type: array
+          description: List of content items
+          items:
+            $ref: '#/components/schemas/AccountModel'
+        page:
+          type: integer
+          description: Current page number (0-based)
+          format: int32
+        size:
+          type: integer
+          description: Number of elements per page
+          format: int32
+        totalElements:
+          type: integer
+          description: Total number of elements
+          format: int64
+      description: Paginated Response
+    
+    AddressLines:
+      required:
+        - line1
+        - postCode
+      type: object
+      properties:
+        line1:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 1
+          example: A J Bell
+        line2:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 2
+          example: '4 Exchange Quay, Salford Quay'
+        line3:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 3
+          example: 15 Dalkeith Road
+        line4:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 4
+          example: Edinburgh
+        line5:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 5
+          example: ''
+        postCode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: Postcode
+          example: M5 3EE
+    
+    AddressModel:
+      required:
+        - countryCode
+        - line1
+        - postCode
+        - premisesIdentifier
+        - primary
+        - town
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id
+          format: int64
+          readOnly: true
+          example: 1
+        primary:
+          type: boolean
+          description: Primary
+          example: true
+        premisesIdentifier:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Premises Identifier
+          example: '12'
+        line1:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 1
+          example: Rosewood Cottage
+        line2:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 2
+          example: Elm Street
+        town:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Town or city
+          example: Hightown
+        county:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: County
+          example: Lancashire
+        postCode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: Postcode
+          example: HT3 4AB
+        countryCode:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Country code
+          example: GB
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+    
+    Relationship:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: 'Populate id with investor id, employer id or third party id.'
+          example: HW00013174A
+        verificationFlag:
+          type: boolean
+          description: Use this owner for bank verification check
+          example: true
+      description: Investor or third party details related to this bank account
+    
+    Bank:
+      required:
+        - bankAccountName
+      type: object
+      properties:
+        bankName:
+          maxLength: 70
+          minLength: 0
+          type: string
+          description: Name of the bank
+          example: HSBC UK
+        bankAccountName:
+          maxLength: 70
+          minLength: 0
+          type: string
+          description: Bank account Name
+          example: Mr G Simpson
+        bankAccountNumber:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Bank account number
+          example: '50220369'
+        bankSortCode:
+          maxLength: 6
+          pattern: '\d{6}'
+          type: string
+          description: Sort code (6-digit UK format)
+          example: '700125'
+        iban:
+          maxLength: 34
+          minLength: 0
+          type: string
+          description: IBAN (International Bank Account Number)
+          example: GB29NWBK60161331926819
+        accountHolders:
+          maxItems: 20
+          minItems: 0
+          type: array
+          description: Bank Account Owner(s)
+          items:
+            $ref: '#/components/schemas/Relationship'
+      description: Bank details payload
+    
+    BankDetails:
+      required:
+        - bankAccountName
+      type: object
+      properties:
+        bankName:
+          maxLength: 70
+          minLength: 0
+          type: string
+          description: Name of the bank
+          example: HSBC UK
+        bankAccountName:
+          maxLength: 70
+          minLength: 0
+          type: string
+          description: Bank account Name
+          example: Mr G Simpson
+        bankAccountNumber:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Bank account number
+          example: '50220369'
+        bankSortCode:
+          maxLength: 6
+          pattern: '\d{6}'
+          type: string
+          description: Sort code (6-digit UK format)
+          example: '700125'
+        iban:
+          maxLength: 34
+          minLength: 0
+          type: string
+          description: IBAN (International Bank Account Number)
+          example: GB29NWBK60161331926819
+        accountHolders:
+          maxItems: 20
+          minItems: 0
+          type: array
+          description: Bank Account Owner(s)
+          items:
+            $ref: '#/components/schemas/Relationship'
+        accountId:
+          maxLength: 11
+          type: string
+          description: Account ID
+          readOnly: true
+          example: HW04002456A
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer ID
+          readOnly: true
+          example: HUBWISE
+        adviserId:
+          maxLength: 11
+          type: string
+          description: Adviser ID
+          readOnly: true
+          example: E003444
+        multiOwnedAccount:
+          type: boolean
+          description: Indicates if account is multi-owned
+          readOnly: true
+          example: true
+        status:
+          type: string
+          description: Status of the bank account
+          readOnly: true
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - UNCHECKED
+            - REFERRED
+            - DELETED
+            - NEW
+            - REJECTED
+            - AUTHORIZE
+            - REFERREDINT
+            - SUBMITTED
+        bankVerificationDate:
+          type: string
+          description: Date when the bank account was verified
+          format: date
+          readOnly: true
+          example: '2025-04-18'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: >-
+        Full bank account details including ownership, status and audit
+        information.
+    
+    AuditInfo:
+      type: object
+      properties:
+        createdByUser:
+          maxLength: 7
+          type: string
+          description: User who created the record
+          readOnly: true
+          example: E004490
+        createdOn:
+          type: string
+          description: Date of creation
+          format: date-time
+          readOnly: true
+          example: '2026-02-16T19:31:19Z'
+        changedByUser:
+          type: string
+          description: User who last modified the record
+          readOnly: true
+          example: E004490
+        changedOn:
+          type: string
+          description: Date of last modification
+          format: date-time
+          readOnly: true
+          example: '2026-02-16T19:31:19Z'
+      description: Audit information for tracking creation and modification
+      readOnly: true
+    
+    InvestorName:
+      type: object
+      properties:
+        title:
+          maxLength: 15
+          type: string
+          description: Title
+          format: string
+          readOnly: true
+          example: Miss
+        firstName:
+          maxLength: 25
+          type: string
+          description: First name
+          format: string
+          readOnly: true
+          example: Firstname
+        middleName:
+          maxLength: 25
+          type: string
+          description: Middle name
+          format: string
+          readOnly: true
+        surname:
+          maxLength: 25
+          type: string
+          description: Surname
+          format: string
+          readOnly: true
+          example: Surname
+      description: Investor Name
+      readOnly: true
+    
+    Rate:
+      type: object
+      properties:
+        rateType:
+          type: string
+          description: 'The type of rate to apply: F = Flat, P = Percentage.'
+          readOnly: true
+          example: FLAT
+          enum:
+            - FLAT
+            - PERCENTAGE
+        value:
+          type: number
+          description: >-
+            Value of the rate. For flat amount: up to 11 digits. For percentage:
+            up to 5 digits with 2 decimal places.
+          readOnly: true
+          example: 5.2
+        lowerBand:
+          maximum: 999999999.99
+          type: number
+          description: Minimum value that can be charged for this band (cap).
+          readOnly: true
+          example: 200
+        upperBand:
+          maximum: 999999999.99
+          type: number
+          description: Maximum value that can be charged for this band (cap).
+          readOnly: true
+          example: 200
+      description: Defines a single rate band within a tiered fee structure.
+    
+    Value:
+      required:
+        - amount
+        - currency
+      type: object
+      properties:
+        amount:
+          maxLength: 11
+          type: number
+          description: Amount
+          format: double
+          example: 15000
+        currency:
+          maxLength: 3
+          type: string
+          description: Currency code
+          example: GBP
+      description: Value object representing amount and currency.
+    
+    CedingProviderModel:
+      type: object
+      properties:
+        id:
+          maxLength: 10
+          type: string
+          description: Ceding Provider Id
+          example: HW015
+        name:
+          maxLength: 50
+          type: string
+          description: Ceding Provider name
+          example: A J Bell Investcentre
+        auto:
+          type: boolean
+          description: >-
+            Indicative for whether a Ceding Provider processes transfer
+            electronically
+          example: true
+        address:
+          $ref: '#/components/schemas/AddressLines'
+        ContactDetailsModel:
+          $ref: '#/components/schemas/ContactDetailsModel'
+      description: Ceding Provider model
+    
+    DeclarationModel:
+      type: object
+      properties:
+        templateId:
+          maxLength: 50
+          type: string
+          description: A declaration ID will refer to the type of declaration being made
+          example: GIA_IFA_DECLARATION
+        investorId:
+          maxLength: 11
+          type: string
+          description: Investor Reference
+          example: S3I00008426
+        platformId:
+          maxLength: 7
+          type: string
+          description: Platform Identifier
+          example: SANLAMP
+        id:
+          type: string
+          description: Unique Reference Number
+          readOnly: true
+          example: '00000004846'
+        accountId:
+          maxLength: 11
+          type: string
+          description: Account Identifier
+          example: S3000000118
+        investorAdded:
+          type: string
+          description: The investor that added this declaration
+          example: 'false'
+        jsonName:
+          maxLength: 150
+          type: string
+          description: The declaration Json name
+          example: appDeclaration
+        chargeId:
+          maxLength: 5
+          type: integer
+          description: Charge Identifier
+          format: int32
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer Reference
+          readOnly: true
+          example: HUBWISE
+        employeeAdded:
+          type: string
+          description: The employee that added this declaration
+          example: 'true'
+        acknowledgement:
+          type: boolean
+          description: >-
+            Typically a true (Yes) or false (No) to determine if the declaration
+            has been read/agreed
+          example: true
+        acknowledgementReason:
+          type: string
+        movementId:
+          maxLength: 5
+          type: integer
+          description: Movement Identifier
+          format: int32
+          example: 4
+        declarationDate:
+          type: string
+          format: date
+        AuditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Declaration Object
+    
+    DeclarationTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the declaration template
+          example: DATA_PROTECTION
+        title:
+          type: string
+          description: Title of the declaration
+          example: Data protection
+        content:
+          type: string
+          description: HTML content of the declaration
+          example: >-
+            <p>The security of your personal information is very important to
+            us...</p>
+        label:
+          type: string
+          description: Consent label text associated with the declaration
+          example: >-
+            I consent to SCM Direct / MoneyShe using my personal data as seen in
+            the firm privacy policy.
+      description: Represents a declaration template with content and consent label.
+    
+    DeclarationTemplateResponse:
+      type: object
+      properties:
+        eventKey:
+          type: string
+          description: Event key for which declarations are fetched
+          example: ACCOUNT_ACTIVATION
+        channel:
+          type: string
+          description: Portal type requesting the declarations
+          example: D2C
+          enum:
+            - D2C
+            - ADVISED
+        declarations:
+          type: array
+          description: List of declaration templates associated with the event and portal
+          items:
+            $ref: '#/components/schemas/DeclarationTemplate'
+      description: >-
+        Represents a collection of declaration templates for a specific event
+        and portal.
+    
+    EntityLinkModel:
+      required:
+        - investorId
+        - relationship
+      type: object
+      properties:
+        investorId:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Investor ID
+          format: string
+          example: HWI00007126
+        relationship:
+          type: string
+          description: Relationship to the account
+          example: OWNER
+          enum:
+            - OWNER
+            - TRUST
+            - REGC
+            - THRD
+        activity:
+          type: string
+          description: Activity permission
+          readOnly: true
+          example: Perform All Actions
+          enum:
+            - Perform All Actions
+            - Perform No Actions
+        accountCategory:
+          type: string
+          description: Account category
+          readOnly: true
+          example: INDIVIDUAL
+          enum:
+            - INDIVIDUAL
+            - PRIMARY
+            - SECONDARY
+        accountGroupId:
+          maxLength: 11
+          type: string
+          description: Account group ID
+          format: string
+          readOnly: true
+          example: HW00014433A
+        platformCustomerId:
+          maxLength: 7
+          type: string
+          description: Platform customer ID
+          format: string
+          readOnly: true
+          example: HDRCT01
+        adviserId:
+          maxLength: 7
+          type: string
+          description: adviserId
+          format: string
+          readOnly: true
+          example: E000788
+        investor:
+          $ref: '#/components/schemas/InvestorName'
+        type:
+          maxLength: 11
+          type: string
+          description: Account type
+          format: string
+          readOnly: true
+          example: ACC-GIA
+        createdOnDate:
+          type: string
+          description: Account creation date (YYYY-MM-DD)
+          format: date
+          readOnly: true
+          example: '2025-04-28'
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer ID
+          format: string
+          readOnly: true
+          example: HUBWISE
+        accountId:
+          maxLength: 11
+          type: string
+          description: Entity/account ID
+          format: string
+          readOnly: true
+          example: HW00013451A
+        status:
+          type: string
+          description: Status of the entity
+          readOnly: true
+          example: INCEPTED
+          enum:
+            - NEW
+            - DELETED
+            - INCEPTED
+            - MIGRATING
+            - SUSPENDED
+            - FROZEN
+            - SUBMITTED_FOR_AUTHORIZATION
+            - DECEASED
+            - TRANSFERRING_OUT
+            - TRANSFERRING_IN
+            - TRADING_SUSPENDED
+            - MOVEMENTS_REJECTED
+            - PENSION_SHARING_ORDER
+            - PROBATE
+            - OVERSEAS
+            - AWAITING_FINAL_CTC
+            - PENDING
+            - PRE_AML
+            - REFERRED
+            - FAILED
+            - WAITING_FOR_DOCUMENTATION
+            - INTENTION_TO_CLOSE
+            - CLOSED
+            - ARCHIVED
+            - FEE_SENT
+            - FEE_RECEIVED
+            - SUB_ACC_TRANSFER
+            - TRANSFER_OUT_CASH
+            - NON_UK_RESIDENT
+      description: Related person details
+    
+    Fee:
+      required:
+        - frequency
+        - type
+      type: object
+      properties:
+        feeCode:
+          maxLength: 6
+          minLength: 0
+          type: string
+          description: Predefined fee code (used for tiered/tariff-based fees).
+          example: AFGVCD
+        feeValue:
+          minimum: 0
+          exclusiveMinimum: false
+          type: number
+          description: Fixed fee amount (in currency). Should be up to 11 digits.
+          example: 100
+        feePercent:
+          maximum: 100
+          exclusiveMaximum: false
+          minimum: 0
+          exclusiveMinimum: false
+          type: number
+          description: 'Fee as a percentage (e.g., 0.75 = 0.75%).'
+          example: 0.75
+        type:
+          type: string
+          description: Specifies the type of fee being charged.
+          example: ADVISER-ANNUAL
+          enum:
+            - ADVISER-ANNUAL
+            - ADVISER-INITIAL
+            - ADVISER-ONE-OFF
+            - PORTFOLIO-MANAGEMENT-FEES
+            - INVESTMENT-MANAGEMENT-FEES
+            - PRODUCT-ANNUAL
+            - PLATFORM-ANNUAL
+            - PRODUCT-INI-FEES
+            - PLATFORM-INI-FEES
+            - DISCRETIONARY-FUND-MANAGEMENT-FEES
+        frequency:
+          type: string
+          description: Indicates how frequently the fee is charged.
+          example: MONTHLY
+          enum:
+            - ANNUAL
+            - MONTHLY
+            - QUARTERLY
+            - HALF-YEARLY
+            - ONE-OFF
+        startDate:
+          type: string
+          description: 'Date the fee starts (format: yyyy-MM-dd).'
+          format: date
+          example: '2025-04-28'
+        endDate:
+          type: string
+          description: 'Date the fee ends (format: yyyy-MM-dd).'
+          format: date
+          example: '2025-05-28'
+        vatIncluded:
+          type: boolean
+          description: Whether VAT is included in the fee amount.
+          example: true
+        transactionId:
+          maximum: 99999
+          type: integer
+          description: 'Transaction ID associated with the fee, if applicable.'
+          format: int64
+          readOnly: true
+          example: 12345
+        id:
+          maximum: 99999
+          minimum: 0
+          type: integer
+          description: Unique identifier for the fee record.
+          format: int64
+          readOnly: true
+          example: 12345
+        accountId:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Identifier of the associated account.
+          readOnly: true
+          example: HW000000108
+        adviserId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Adviser’s unique identifier.
+          readOnly: true
+          example: E000139
+        customerId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Customer identifier related to the fee.
+          readOnly: true
+          example: HUBWISE
+        tierDetails:
+          $ref: '#/components/schemas/TieredFeeDetails'
+        status:
+          type: string
+          description: Current status of the fee.
+          readOnly: true
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - COMPLETED
+            - DELAYED
+            - NEW
+            - DEFAULT
+            - T
+            - C
+            - 'Y'
+        instalmentPlan:
+          $ref: '#/components/schemas/FeeInstalmentPlan'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Represents a fee charged to an account.
+    
+    FeeInstalmentPlan:
+      type: object
+      properties:
+        frequency:
+          type: string
+          description: Frequency at which each installment is charged.
+          example: MONTHLY
+          enum:
+            - ANNUAL
+            - MONTHLY
+            - QUARTERLY
+            - HALF-YEARLY
+            - ONE-OFF
+        total:
+          maximum: 999
+          type: integer
+          description: Total number of installments in the plan.
+          format: int64
+          example: 12
+        completed:
+          maximum: 999
+          type: integer
+          description: Number of installments already completed.
+          format: int64
+          readOnly: true
+          example: 5
+      description: >-
+        Represents an installment plan for distributing a fee into multiple
+        parts.
+    
+    TieredFeeDetails:
+      type: object
+      properties:
+        bandingType:
+          type: string
+          description: 'Defines the banding method: Ribboned (R) or Stepped (S).'
+          readOnly: true
+          example: RIBBONED
+          enum:
+            - RIBBONED
+            - STEPPED
+        minFeeAmount:
+          maximum: 999999999.99
+          type: number
+          description: Minimum fee charge allowed.
+          readOnly: true
+          example: 123.45
+        maxFeeAmount:
+          maximum: 999999999.99
+          type: number
+          description: Maximum fee charge allowed.
+          readOnly: true
+          example: 9999.99
+        description:
+          maxLength: 35
+          minLength: 0
+          type: string
+          description: >-
+            Label or title for this fee structure (e.g., 'Product Annual Fee
+            Bands').
+          readOnly: true
+          example: Product Annual Fee Bands
+        tiers:
+          type: array
+          description: List of individual fee rate bands.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Rate'
+      description: Detailed configuration for a tiered fee structure.
+      readOnly: true
+    
+    AllowanceModel:
+      type: object
+      properties:
+        remainingAllowance:
+          type: number
+          description: Remaining annual allowance amount
+          readOnly: true
+          example: 20000
+        subscribedAmount:
+          type: number
+          description: Total amount already subscribed
+          readOnly: true
+          example: 0
+      description: Investor allowance information
+    
+    ContactDetailsModel:
+      type: object
+      properties:
+        contactPhone:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Contact Phone
+          format: string
+          example: '01619465555'
+        homePhone:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Home Phone
+          format: string
+          example: '01619464444'
+        mobilePhone:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Mobile Phone
+          format: string
+          example: '07877156340'
+        email:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: Email
+          format: string
+          example: john.doe@outlook.com
+      description: Contact Details Model
+    
+    IncomeAndInvestmentModel:
+      required:
+        - annualIncome
+        - industry
+        - investmentAgreedInPerson
+        - investmentReason
+        - occupation
+      type: object
+      properties:
+        occupation:
+          type: string
+          description: Occupation code
+          format: string
+          example: OTHER
+          enum:
+            - BUSINESS_OWNER
+            - C_SUITE_EXECUTIVE
+            - CORPORATE
+            - CORPORATE_PROFESSIONAL
+            - EDUCATION_PROFESSIONAL
+            - GOVERNMENT_EMPLOYEE
+            - HEAD_OF_STATE
+            - INFLUENCER
+            - MEDICAL_PROFESSIONAL
+            - MID_RANK_MILITARY
+            - MIDDLE_MANAGER
+            - OTHER_MILITARY_PERSONNEL
+            - PILOT
+            - PROFESSIONAL_SUPPORT
+            - RETAIL_HOSPITALITY
+            - RETIREE
+            - SALES_PROFESSIONAL
+            - SELF_EMPLOYED
+            - SENIOR_MILITARY_OFFICIAL
+            - SENIOR_SPORTS_PROFESSIONAL
+            - SKILLED_WORKER
+            - STUDENT
+            - UNEMPLOYED
+            - UNSKILLED_WORKER
+            - OTHER
+        occupationOtherValue:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Occupation other value
+          format: string
+          example: Management Consultant
+        industry:
+          type: string
+          description: Industry code
+          format: string
+          example: OTHER
+          enum:
+            - AEROSPACE_DEFENCE
+            - AGRICULTURE_FORESTRY_FISHING
+            - ARMED_FORCES
+            - ARMS_DEALERS_MANUFACTURERS
+            - ART_ANTIQUES_DEALERS
+            - ASSET_WEALTH_MANAGEMENT
+            - AUTOMOTIVE
+            - BANKING_CAPITAL_MARKETS
+            - BUREAU_DE_CHANGE
+            - CAPITAL_PROJECTS_INFRASTRUCTURE
+            - CASH_CONVERTERS
+            - CHARITIES
+            - CHEMICALS
+            - CONSULTING_SERVICES
+            - CREATIVE_ARTS_DESIGN
+            - CRYPTO
+            - DEPOSIT_BOX_SERVICES
+            - DISTRIBUTION
+            - EDUCATION
+            - ENGINEERING_CONSTRUCTION_TRADES
+            - FINANCIAL_SERVICES
+            - FOOD_DRINK_TOBACCO
+            - FOREST_PAPER_PACKAGING
+            - FREELANCERS_DIGITAL_NOMADS
+            - GAMBLING_CASINOS
+            - GOVERNMENT_PUBLIC_SERVICES
+            - HEALTHCARE
+            - HOSPITALITY_EVENTS_LEISURE
+            - IMPORT_EXPORT_BUSINESSES
+            - INSURANCE
+            - LEGAL_ACCOUNTING
+            - MANUFACTURING
+            - MEDIA_ENTERTAINMENT
+            - MINING_MINERALS
+            - MONEY_LENDERS_PAWNBROKERS
+            - MONEY_SERVICE_BUREAUS
+            - OIL_GAS
+            - PHARMA_LIFE_SCIENCES
+            - POWER_UTILITIES
+            - PRECIOUS_METALS_JEWELLERS
+            - PRIVATE_EQUITY
+            - REAL_ESTATE
+            - RETAIL_CASH_INTENSIVE
+            - RETAIL_CONSUMER
+            - SOCIAL_MEDIA_INFLUENCERS_CREATORS
+            - SOCIAL_SERVICES
+            - SOVEREIGN_INVESTMENT_FUNDS
+            - SPORTS_INDUSTRY
+            - TECHNOLOGY_IT_TELECOMS
+            - TRANSPORT_LOGISTICS
+            - TRUSTEE
+            - OTHER
+        industryOtherValue:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Industry other value
+          format: string
+          example: Consulting Services
+        annualIncome:
+          type: string
+          description: Annual income code
+          format: string
+          example: FROM_50K_TO_75K
+          enum:
+            - BELOW_25K
+            - FROM_25K_TO_50K
+            - FROM_50K_TO_75K
+            - FROM_75K_TO_100K
+            - FROM_100K_TO_125K
+            - FROM_125K_TO_150K
+            - FROM_150K_TO_200K
+            - ABOVE_200K
+        investmentReason:
+          type: string
+          description: Investment reason code
+          format: string
+          example: GROW_WEALTH
+          enum:
+            - BETTER_THAN_SAVINGS
+            - GROW_WEALTH
+            - MARKET_GROWTH
+            - REGULAR_INCOME
+            - RETIREMENT_PLANNING
+            - TAX_ADVANTAGES
+        investmentAgreedInPerson:
+          type: boolean
+          description: Investment agreed in person
+          format: Boolean
+          example: true
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Income and Investment Model
+    
+    IndividualModel:
+      required:
+        - dateOfBirth
+        - firstName
+        - gender
+        - surname
+        - territorialProfile
+        - title
+      type: object
+      properties:
+        title:
+          maxLength: 15
+          type: string
+          description: Title
+          example: OTHER
+          enum:
+            - MR
+            - MASTER
+            - SIR
+            - MRS
+            - MISS
+            - MS
+            - PROF
+            - DR
+            - REV
+            - LORD
+            - LADY
+            - OTHER
+        titleOtherValue:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Title Other Value
+          format: string
+          example: General
+        firstName:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: First Name
+          format: string
+          example: Sam
+        middleName:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: Middle Name
+          format: string
+          example: John
+        surname:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: Surname
+          format: string
+          example: Smith
+        dateOfBirth:
+          maxLength: 10
+          type: string
+          description: Date of Birth
+          format: date
+          example: '2000-02-20'
+        gender:
+          type: string
+          description: Gender
+          example: MALE
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+        maritalStatus:
+          type: string
+          description: Marital Status Enum
+          example: MARRIED
+          enum:
+            - SINGLE
+            - MARRIED
+            - DIVORCED
+            - WIDOWED
+            - SEPARATED
+            - CIVIL
+            - COMMONLAW
+            - OTHERDEP
+            - UNDISC
+        incomeAndInvestment:
+          $ref: '#/components/schemas/IncomeAndInvestmentModel'
+        allowance:
+          $ref: '#/components/schemas/AllowanceModel'
+        territorialProfile:
+          $ref: '#/components/schemas/TerritorialProfileModel'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetailsModel'
+        notificationsPreferences:
+          $ref: '#/components/schemas/NotificationModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Individual Model
+    
+    InvestorModel:
+      required:
+        - addresses
+        - adviserId
+        - type
+      type: object
+      properties:
+        id:
+          maxLength: 11
+          type: string
+          description: Id
+          format: string
+          readOnly: true
+          example: HWI04003219
+        tenantId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Tenant Id
+          format: string
+          readOnly: true
+          example: HUBWISE
+        adviserId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: adviserId
+          format: string
+          example: E007290
+        type:
+          type: string
+          description: Entity Type
+          example: INDIVIDUAL
+          enum:
+            - INDIVIDUAL
+            - COURT_APPOINTED_DEPUTY
+            - CORPORATE
+            - BARE_TRUST
+            - VULNERABLE_PERSON_TRUST
+            - PARENT_TRUST
+            - DISCRETIONARY_TRUST
+            - INTEREST_IN_POSSESSION_TRUST
+            - NON_UK_RESIDENT_TRUST
+            - ACCUMULATION_TRUST
+            - MIXED_TRUST
+            - SETTLOR_INTERESTED_TRUST
+            - WILL_TRUST
+        status:
+          type: string
+          description: Entity status
+          readOnly: true
+          example: NEW
+          enum:
+            - NEW
+            - DELETED
+            - INCEPTED
+            - SUSPENDED
+            - FROZEN
+            - DECEASED
+            - PENDING
+            - PRE_AML
+            - REFERRED
+            - FLD_AML
+            - INTENTION_TO_CLOSE
+            - WAITING_AML_DOCUMENTATION
+            - CLOSED
+            - ARCHIVED
+            - NON_UK_RESIDENT
+            - FAS
+        individual:
+          $ref: '#/components/schemas/IndividualModel'
+        addresses:
+          maxItems: 5
+          minItems: 0
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/AddressModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Investor Model
+    
+    NationalityModel:
+      required:
+        - countryCode
+        - primary
+      type: object
+      properties:
+        id:
+          maxLength: 11
+          type: integer
+          description: id
+          format: int64
+          readOnly: true
+          example: 1
+        countryCode:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Country Code
+          format: String
+          example: GB
+        primary:
+          type: boolean
+          description: Primary
+          format: Boolean
+          example: true
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Nationality Model
+    
+    NotificationModel:
+      type: object
+      properties:
+        disableEmails:
+          type: boolean
+          description: Email Notification
+          format: Boolean
+          example: false
+        disableSms:
+          type: boolean
+          description: Sms Notification
+          format: Boolean
+          example: false
+      description: Notification Model
+    
+    TaxationModel:
+      required:
+        - countryCode
+        - primary
+      type: object
+      properties:
+        id:
+          maxLength: 11
+          type: integer
+          description: Id
+          format: int64
+          readOnly: true
+          example: 1
+        countryCode:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Country Code
+          format: String
+          example: GB
+        primary:
+          type: boolean
+          description: Primary
+          format: Boolean
+          example: true
+        tin:
+          maxLength: 35
+          minLength: 0
+          type: string
+          description: Tin
+          format: String
+          example: AC123456C
+        lei:
+          maxLength: 35
+          minLength: 0
+          type: string
+          description: LEI (Legal Entity Identifier)
+          format: String
+          example: 5493001KJTIIGC8Y1R12
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Taxation Model
+    
+    TerritorialProfileModel:
+      required:
+        - taxResidencies
+      type: object
+      properties:
+        nationalities:
+          maxItems: 5
+          minItems: 1
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/NationalityModel'
+        taxResidencies:
+          maxItems: 5
+          minItems: 1
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/TaxationModel'
+      description: TerritorialProfile Model
+    
+    ModelHeader:
+      required:
+        - customerId
+        - id
+      type: object
+      properties:
+        id:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Model Id
+          format: string
+          example: HW000000090
+        customerId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Model Customer Id
+          format: string
+          example: HUBWISE
+        date:
+          type: string
+          description: Model Date
+          format: date
+          example: '2020-04-28'
+      description: Model keys associated to account
+    
+    Movement:
+      required:
+        - frequency
+        - type
+      type: object
+      properties:
+        movementId:
+          type: integer
+          description: Id of the movement created.
+          format: int64
+          readOnly: true
+          example: 2
+        type:
+          type: string
+          description: 'Type of the movement such as CONTRIBUTIONS, WITHDRAWALS.'
+          example: CONTRIBUTIONS
+          enum:
+            - CONTRIBUTIONS
+            - WITHDRAWALS
+            - INCOME_DISTRIBUTIONS_WITHDRAWAL
+            - INCOME_WITHDRAWAL_REINVEST
+            - UFPLS
+            - FLEXI_ACCESS_INCOME
+            - FLEXI_ACCESS_PCLS
+            - EXISTING_VALUE
+        paymentMethod:
+          type: string
+          description: 'Payment method for the movement, e.g., ELECTRONIC, CHEQUE.'
+          example: ELECTRONIC
+          enum:
+            - ELECTRONIC
+            - CHEQUE
+            - DIRECT_DEBIT
+            - FASTER_PAYMENT
+        payer:
+          type: string
+          description: Indicates who the payer is; typically SELF or EMPLOYER.
+          example: SELF
+          enum:
+            - SELF
+            - EMPLOYER
+        frequency:
+          type: string
+          description: 'Frequency of the movement, e.g., ONE-OFF, MONTHLY.'
+          example: ONE-OFF
+          enum:
+            - ANNUAL
+            - MONTHLY
+            - QUARTERLY
+            - HALF-YEARLY
+            - ONE-OFF
+        value:
+          $ref: '#/components/schemas/Value'
+        bank:
+          $ref: '#/components/schemas/bankAccountIdentifier'
+        isGross:
+          type: boolean
+          description: Flag indicating whether the value is gross or net.
+          example: true
+        startDate:
+          type: string
+          description: Start date for this movement.
+          format: date
+        reference:
+          pattern: '^[A-Z0-9]{2}-[A-Z0-9]+-\d+$'
+          type: string
+          description: Reference associated with this movement.
+        fee:
+          $ref: '#/components/schemas/MovementFee'
+        endDate:
+          type: string
+          description: >-
+            End date for the movement. Applicable in draw-downs or recurring
+            setups
+          format: date
+        isMaximum:
+          type: boolean
+          description: >-
+            Indicates if the maximum allowable amount should be considered.
+            Applicable for draw-downs only.
+        cashOnlyInstruction:
+          type: boolean
+          description: >-
+            Indicates whether money needs to go into CASH or if false/null this
+            goes into Model selected at Account Level.
+          example: false
+        hrmcProtection:
+          $ref: '#/components/schemas/hrmcProtection'
+        sourceOfFund:
+          $ref: '#/components/schemas/sourceOfFund'
+        thirdPartyId:
+          type: string
+          description: >-
+            Third-party ID if payment or investment is made by an external
+            person/entity.
+        dependantAccountId:
+          type: string
+          description: Id of a dependant account involved in this movement.
+        returnUri:
+          type: string
+          description: >-
+            Return Uri where the traffic needs to be routed once the faster
+            payment is completed.
+        status:
+          type: string
+          description: Status of the movement such CREATED
+          readOnly: true
+          example: NEW
+          enum:
+            - INCEPTED
+            - NEW
+            - COMPLETE
+            - PENDING
+            - ARCHIVED
+        creditDebit:
+          type: string
+          description: If the movement is credit or debit
+          readOnly: true
+          example: CREDIT
+          enum:
+            - CREDIT
+            - DEBIT
+        AuditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+        paymentHistory:
+          type: array
+          description: Represents the historical record of a financial movement.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/MovementHistory'
+      description: Request to create a new money movement.
+    
+    MovementFee:
+      type: object
+      properties:
+        feeValue:
+          type: number
+          description: Fixed fee amount (in currency). Should be up to 11 digits.
+          example: 100
+        feePercent:
+          maximum: 100
+          exclusiveMaximum: false
+          minimum: 0
+          exclusiveMinimum: false
+          type: number
+          description: 'Fee as a percentage (e.g., 0.75 = 0.75%).'
+          example: 0.75
+        instalmentPlan:
+          $ref: '#/components/schemas/FeeInstalmentPlan'
+      description: Represents a fee charged to an account.
+    
+    MovementHistory:
+      type: object
+      properties:
+        movementDate:
+          type: string
+          description: The date when the movement occurred.
+          format: date
+          readOnly: true
+          example: '2024-06-01'
+        movementAuditDate:
+          type: string
+          description: The date when the movement was audited or recorded in the system.
+          format: date-time
+          readOnly: true
+        amount:
+          type: number
+          description: The amount of money moved on the given movement date.
+          readOnly: true
+          example: 1500
+      description: Represents the historical record of a financial movement.
+      readOnly: true
+    
+    AccountEmployerParty:
+      type: object
+      properties:
+        accountId:
+          type: string
+          readOnly: true
+          example: HW00000153A
+        relationshipId:
+          type: string
+          readOnly: true
+          example: '3'
+        relationshipType:
+          type: string
+          readOnly: true
+          example: ACCOUNT_EMPLOYER
+          enum:
+            - POWER_OF_ATTORNEY
+            - DEATH_BENEFICIARY
+            - ACCOUNT_EMPLOYER
+        companyName:
+          maxLength: 50
+          type: string
+          example: Tesco
+        companyRegistration:
+          maxLength: 10
+          type: string
+          example: REGH78451
+        email:
+          maxLength: 50
+          type: string
+          example: hr@tesco.co.uk
+        phone:
+          maxLength: 15
+          type: string
+          example: '0221544785'
+        address:
+          $ref: '#/components/schemas/RelationshipAddressModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Related party for ACCOUNT_EMPLOYER
+    
+    BeneficiaryParty:
+      type: object
+      properties:
+        accountId:
+          type: string
+          readOnly: true
+          example: HW00000153A
+        relationshipId:
+          type: string
+          readOnly: true
+          example: '3'
+        relationshipType:
+          type: string
+          readOnly: true
+          example: DEATH_BENEFICIARY
+          enum:
+            - POWER_OF_ATTORNEY
+            - DEATH_BENEFICIARY
+            - ACCOUNT_EMPLOYER
+        title:
+          maxLength: 25
+          type: string
+          example: Mr
+        firstName:
+          maxLength: 30
+          type: string
+          example: Ross
+        surname:
+          maxLength: 25
+          type: string
+          example: Geller
+        dateOfBirth:
+          type: string
+          format: date
+          example: '2000-04-04'
+        relation:
+          maxLength: 20
+          type: string
+          example: Brother
+        percentage:
+          maxLength: 3
+          type: number
+          example: 100
+        email:
+          maxLength: 50
+          type: string
+          example: hr@tesco.co.uk
+        phone:
+          maxLength: 15
+          type: string
+          example: '0221544785'
+        address:
+          $ref: '#/components/schemas/RelationshipAddressModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Beneficiary Party
+    
+    PowerOfAttorneyParty:
+      type: object
+      properties:
+        accountId:
+          type: string
+          readOnly: true
+          example: HW00000153A
+        relationshipId:
+          type: string
+          readOnly: true
+          example: '3'
+        relationshipType:
+          type: string
+          readOnly: true
+          example: POWER_OF_ATTORNEY
+          enum:
+            - POWER_OF_ATTORNEY
+            - DEATH_BENEFICIARY
+            - ACCOUNT_EMPLOYER
+        title:
+          maxLength: 25
+          type: string
+          example: Mr
+        firstName:
+          maxLength: 30
+          type: string
+          example: Ross
+        surname:
+          maxLength: 25
+          type: string
+          example: Geller
+        email:
+          maxLength: 50
+          type: string
+          example: hr@tesco.co.uk
+        phone:
+          maxLength: 15
+          type: string
+          example: '0221544785'
+        address:
+          $ref: '#/components/schemas/RelationshipAddressModel'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Power Of Attorney Party
+    
+    RelationshipAddressModel:
+      required:
+        - countryCode
+        - line1
+        - postCode
+        - town
+      type: object
+      properties:
+        flatNo:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Flat number
+        houseNo:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: House number
+        line1:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Address line 1
+          example: A J Bell
+        line2:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Address line 2
+          example: '4 Exchange Quay, Salford Quay'
+        town:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: Town or city
+          example: Manchester
+        county:
+          maxLength: 75
+          minLength: 0
+          type: string
+          description: County
+        countryCode:
+          maxLength: 2
+          minLength: 0
+          type: string
+          description: Country code
+        postCode:
+          maxLength: 12
+          minLength: 0
+          type: string
+          description: Postcode
+          example: M5 3EE
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+    
+    RelationshipModel:
+      type: object
+      properties:
+        beneficiaries:
+          type: array
+          description: Death Beneficiary details
+          items:
+            $ref: '#/components/schemas/BeneficiaryParty'
+        powerOfAttorneys:
+          type: array
+          description: Power of attorney details
+          items:
+            $ref: '#/components/schemas/PowerOfAttorneyParty'
+        accountEmployers:
+          type: array
+          description: Employer details
+          items:
+            $ref: '#/components/schemas/AccountEmployerParty'
+      description: Relationship model
+    
+    bankAccountIdentifier:
+      type: object
+      properties:
+        bankAccountNumber:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Bank account number
+          example: '50220369'
+        bankSortCode:
+          maxLength: 6
+          pattern: '\d{6}'
+          type: string
+          description: Sort code (6-digit UK format)
+          example: '700125'
+        iban:
+          maxLength: 34
+          minLength: 0
+          type: string
+          description: IBAN (International Bank Account Number)
+          example: GB29NWBK60161331926819
+        providerId:
+          maxLength: 50
+          type: string
+          description: >-
+            The provider Id the PSU will use for this payment, primarily used
+            for True Layer Bank Identifier
+          example: ob-bank-name
+      description: Details of bank associated to the account or movement.
+    
+    hrmcProtection:
+      type: object
+      properties:
+        hmrcProtection:
+          type: boolean
+          description: >-
+            Indicates whether HMRC protection is applied. Applicable for
+            draw-downs only.
+        hmrcProtectionType:
+          type: string
+          description: >-
+            Type of HMRC protection applied (e.g., PRIMARY, ENHANCED).
+            Applicable for draw-downs only.
+          example: Primary Protection
+          enum:
+            - Enhanced Protection
+            - Primary Protection
+            - Fixed Protection
+            - Fixed Protection 2014
+            - Fixed Protection 2016
+            - Individual Protection 2014
+            - Individual Protection 2016
+        commencementEvidence:
+          type: string
+          description: >-
+            Type of evidence provided for pension commencement. Applicable for
+            draw-downs only.
+          example: NONE
+        hmrcCertificateNumber:
+          type: string
+          description: >-
+            Type of evidence provided for pension commencement. Applicable for
+            draw-downs only.
+          example: FP123451231233A
+      description: Represents all HRMC protection rules.
+    
+    sourceOfFund:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A unique code that designates the Source of Fund type.
+          example: SAVINGS
+          enum:
+            - DIVIDENDS_OR_COMPANY_PROFITS
+            - DIVORCE
+            - EARNINGS
+            - GIFT
+            - INHERITANCE
+            - INSURANCE_CLAIMS
+            - LOAN
+            - LOTTERY_OR_GAMBLING_WIN
+            - MATURITY_OR_SURRENDER_OF_LIFE_ASSURANCE
+            - OTHER
+            - OTHER_COURT_AWARD
+            - SALE_OF_INVESTMENTS
+            - SALE_OF_PROPERTY_OR_BUSINESS
+            - SAVINGS
+        fields:
+          $ref: '#/components/schemas/fields'
+      description: >-
+        This provides details explaining the source of funds for AML (Anti-Money
+        Laundering).
+    
+    fields:
+      type: object
+      properties:
+        annualSalary:
+          type: number
+          description: The annual salary associated with this source of fund (optional).
+          example: 100000
+        jobDescription:
+          type: string
+          description: >-
+            A description of the job or occupation related to this source of
+            fund (optional).
+          example: Contractor
+        natureOfBusiness:
+          type: string
+          description: >-
+            The nature of the business or industry related to this source of
+            fund (optional).
+          example: Financial Services
+        'amountReceived ':
+          type: number
+          description: the amount received from this source of fund (optional).
+          example: 5000
+        'frequency ':
+          type: string
+          description: >-
+            The frequency at which funds are received from this source
+            (optional).
+          example: MONTHLY
+        donorName:
+          type: string
+          description: The name of the donor if the source of fund is a gift (optional).
+          example: John Doe
+        'dateReceived ':
+          type: string
+          description: The date when the funds were received from this source (optional).
+          format: date
+          example: '2024-01-15'
+        benefactorName:
+          type: string
+          description: >-
+            The name of the benefactor if the source of fund is an inheritance
+            or a claim (optional).
+          example: Jane Smith
+        relationshipToBenefactor:
+          type: string
+          description: >-
+            The relationship of the individual to the benefactor if the source
+            of fund is an inheritance or a claim (optional).
+          example: Parent
+        claimValue:
+          type: number
+          description: >-
+            The value of the claim if the source of fund is an insurance claim
+            (optional).
+          example: 20000
+        providerName:
+          type: string
+          description: >-
+            The name of the insurance provider if the source of fund is an
+            insurance claim (optional).
+          example: Insurance Company
+        natureOfClaim:
+          type: string
+          description: >-
+            The nature or type of the claim if the source of fund is an
+            insurance claim (optional).
+          example: Life Insurance Claim
+        loanValue:
+          type: number
+          description: The value of the loan if the source of fund is a loan (optional).
+          example: 15000
+        lenderName:
+          type: string
+          description: The name of the lender if the source of fund is a loan (optional).
+          example: Bank of Example
+        winValue:
+          type: number
+          description: >-
+            The value of the winnings if the source of fund is a lottery or
+            gambling win (optional).
+          example: 5000
+        sourceOfWinnings:
+          type: string
+          description: >-
+            The source or type of winnings if the source of fund is a lottery or
+            gambling win (optional).
+          example: Lottery
+        maturityOrSurrenderValue:
+          type: number
+          description: >-
+            The maturity or surrender value if the source of fund is the
+            maturity or surrender of a life assurance policy (optional).
+          example: 10000
+        awardValue:
+          type: number
+          description: >-
+            The value of the court award if the source of fund is a court award
+            (optional).
+          example: 25000
+        natureOfAward:
+          type: string
+          description: >-
+            The nature or type of the court award if the source of fund is a
+            court award (optional).
+          example: Personal Injury Settlement
+        dateOfSale:
+          type: string
+          description: >-
+            The date of the sale if the source of fund is the sale of
+            investments, property, or a business (optional).
+          format: date
+        investmentType:
+          type: string
+          description: >-
+            The type of investment if the source of fund is the sale of
+            investments (e.g., stocks, bonds) (optional).
+        investmentHoldingPeriod:
+          type: string
+          description: >-
+            The holding period of the investment if the source of fund is the
+            sale of investments (e.g., short-term, long-term) (optional).
+        saleAmount:
+          type: number
+          description: >-
+            The amount of the sale if the source of fund is the sale of
+            investments, property, or a business (optional).
+        natureOfPropertyOrBusiness:
+          type: string
+          description: >-
+            The nature or type of the property or business if the source of fund
+            is the sale of property or a business (optional).
+        sourceOfSavings:
+          type: string
+          description: >-
+            The source or origin of the savings if the source of fund is savings
+            (e.g., personal savings, family savings) (optional).
+        description:
+          type: string
+          description: A short description of the source of funds.
+          example: Savings
+      description: ' This is  provide a structure for the source of fund fields.'
+    
+    AccountTransferModel:
+      required:
+        - actualEstimated
+        - frequency
+        - mode
+        - type
+      type: object
+      properties:
+        id:
+          maxLength: 3
+          type: integer
+          description: Unique transfer ID
+          format: int64
+          readOnly: true
+          example: 0
+        accountId:
+          maxLength: 11
+          type: string
+          description: Account ID
+          readOnly: true
+          example: HW04002456A
+        customerId:
+          maxLength: 7
+          type: string
+          description: Customer ID
+          readOnly: true
+          example: HUBWISE
+        adviserId:
+          maxLength: 7
+          type: string
+          description: adviserId
+          format: string
+          readOnly: true
+        type:
+          type: string
+          description: Transfer type
+          example: CASH
+          enum:
+            - CASH
+            - INSPECIE
+        mode:
+          type: string
+          description: Mode of transfer
+          example: IN
+          enum:
+            - IN
+            - OUT
+        cedingProvider:
+          $ref: '#/components/schemas/CedingProviderModel'
+        registeredHolderName:
+          maxLength: 70
+          type: string
+          description: Registered holder name
+          example: Mr Henrick Deamon
+        referenceNumber:
+          maxLength: 20
+          type: string
+          description: Transfer reference number
+          example: '896546'
+        value:
+          $ref: '#/components/schemas/Value'
+        actualEstimated:
+          type: string
+          description: Actual or Estimated
+          example: ESTIMATED
+          enum:
+            - NOT SET
+            - ACTUAL
+            - ESTIMATED
+        status:
+          type: string
+          description: Transfer status code
+          readOnly: true
+          example: CRT
+          enum:
+            - CAN
+            - CLO
+            - CRJ
+            - CRT
+            - EXP
+            - OPN
+            - REJ
+        creditDebit:
+          type: string
+          description: Credit or debit indicator
+          readOnly: true
+          example: CREDIT
+          enum:
+            - CREDIT
+            - DEBIT
+        frequency:
+          type: string
+          description: Transfer frequency
+          readOnly: true
+          example: ONE-OFF
+          enum:
+            - ANNUAL
+            - MONTHLY
+            - QUARTERLY
+            - HALF-YEARLY
+            - ONE-OFF
+        movementDate:
+          type: string
+          description: Date of movement in YYYY-MM-DD format
+          format: date
+          readOnly: true
+          example: '2025-04-15'
+        isPartial:
+          type: boolean
+          description: >-
+            ‘Choose whether a cash transfer is full or partial. Not applicable
+            for in-specie transfers
+          example: false
+        crystallisedValue:
+          maxLength: 11
+          type: number
+          description: |2
+              Applicable for pension products
+          example: 0
+        uncrystallisedValue:
+          maxLength: 11
+          type: number
+          description: Uncrystallised value
+          readOnly: true
+          example: 0
+        planType:
+          maxLength: 50
+          type: string
+          description: >-
+            The type of account to be transferred. Required for pension
+            products.
+          enum:
+            - SIPP
+            - AContractinaccordancewithsection591
+            - Astatutoryschemeestablishedundersection611a
+            - Anoverseasscheme
+            - AVC
+            - FreeStandingAVC
+            - DeferredAnnuityContract
+            - DefinedBenefitsRetirementBenefitsScheme
+            - InternalBidtoBidtransfer
+            - MoneyPurchaseRetirementBenefitsScheme
+            - OccSchemeapprovedunderCh1PartXIVICTA88
+            - PersonalPensionScheme
+            - QROPS
+            - RetirementAnnuityContract
+            - Section226or226Apolicy
+            - Section32BuyOut
+            - SmallSelfAdministeredScheme
+            - StakeholderPensionPlan
+        currentYearSubscription:
+          maxLength: 11
+          type: number
+          description: Current year subscription value
+          example: 0
+        fee:
+          $ref: '#/components/schemas/MovementFee'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Account Transfer model
+    
+    CorrespondenceChangeHeaderModel:
+      type: object
+      properties:
+        correspondences:
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/VulnerabilityCorrespondenceModel'
+        declarations:
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/DeclarationModel'
+    
+    VulnerabilityChangeHeaderModel:
+      type: object
+      properties:
+        investorId:
+          type: string
+        tenantId:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Tenant Id
+          format: string
+          readOnly: true
+          example: HUBWISE
+        vulnerabilities:
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/VulnerabilityModel'
+        declarations:
+          type: array
+          format: Object
+          items:
+            $ref: '#/components/schemas/DeclarationModel'
+    
+    VulnerabilityCorrespondenceModel:
+      type: object
+      properties:
+        type:
+          type: string
+          description: >-
+            The preferred correspondence format or access arrangement required
+            by the investor to support effective communication and accessibility
+          readOnly: true
+          example: LARGE_PRINT
+          enum:
+            - AUDIO
+            - BRAILLE
+            - LARGE_PRINT
+            - ERROR
+        startDate:
+          type: string
+          description: Vulnerabilities start date
+          format: date
+          example: '2025-01-01'
+        expiryDate:
+          type: string
+          description: Vulnerabilities expiry date
+          format: date
+          example: '2026-01-01'
+        adviserId:
+          type: string
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Investor Vulnerability Correspondence Model
+    
+    VulnerabilityModel:
+      type: object
+      properties:
+        type:
+          type: string
+          description: >-
+            The category of vulnerability applicable to the investor, in line
+            with Consumer Duty guidance
+          example: HEALTH
+          enum:
+            - HEALTH
+            - LIFE_EVENTS
+            - RESILIENCE
+            - CAPABILITY
+        serviceLevel:
+          type: string
+          description: >-
+            The service adjustment or support requirements needed to ensure fair
+            and appropriate customer outcomes. These indicators guide how the
+            firm should communicate with or support the investor
+          example: ARRANGE_WRITTEN_CONFIRMATION_OF_ANY_DISCUSSIONS
+          enum:
+            - ARRANGE_WRITTEN_CONFIRMATION_OF_ANY_DISCUSSIONS
+            - CLIENT_UNABLE_TO_USE_INTERNET
+            - EMPATHY_NEEDED_FOR_CUSTOMER
+            - ENGLISH_LANGUAGE_SUPPORT_REQUIRED
+            - LITERACY_OR_NUMERACY_SUPPORT_NEEDED
+            - ONLINE_SUPPORT_NEEDED
+            - DO_NOT_OUTBOUND_CALL
+            - USE_SIMPLIFIED_LANGUAGE
+            - SPEAK_LOUDLY_AND_CLEARLY
+            - SPEAK_SLOWLY_FOR_CLIENT
+            - NONE_REQUIRED
+            - VARIED_CORRESPONDENCE_FORMAT
+            - ERROR
+        startDate:
+          type: string
+          description: Vulnerabilities start date
+          format: date
+          example: '2025-01-01'
+        expiryDate:
+          type: string
+          description: Vulnerabilities expiry date
+          format: date
+          example: '2026-01-01'
+        adviserId:
+          type: string
+        AuditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+      description: Investor Vulnerability Model
+  
+  securitySchemes:
+    bearer-token:
+      type: http
+      description: >
+        **The API operations may require HTTP Bearer authentication scheme with
+        JWT format as defined in Open API 3.0.**
+
+        An Authorization header must be present if the operation requires
+        authorization, 
+
+
+        for example:
+
+        ```
+
+        Authorization: Bearer token-value 
+
+        ```
+      scheme: bearer
+      bearerFormat: JWT
+    x-api-key:
+      type: apiKey
+      description: |-
+        **API key header used for tenant-level authorization.**
+
+        For example:
+        ```
+        x-api-key: x-api-key-value
+        ```
+      name: x-api-key
+      in: header
