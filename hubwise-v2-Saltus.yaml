@@ -574,12 +574,11 @@ paths:
                       - resource: /investors
                         message: Unexpected exception during processing.
 
-
   /investors/{investorId}/vulnerabilities:
     post:
       tags:
         - Investor
-      summary: Create investors characteristics of vulnerabilities
+      summary: Create investor vulnerabilities
       description: >
         - Allows the creation of 1 or more characteristics of vulnerabilities
         for a specific investor using their unique SS&C Hubwise Investor ID
@@ -724,12 +723,11 @@ paths:
                       - resource: /investors
                         message: Unexpected exception during processing.
 
-
   /investors/{investorId}/correspondences:
     post:
       tags:
         - Investor
-      summary: Create investors characteristics of vulnerabilities
+      summary: Create investor correspondences
       description: >
         - Allows the creation of 1 or more correspondences for a specific
         investor using their unique SS&C Hubwise Investor ID which is generated
@@ -874,7 +872,7 @@ paths:
     get:
       tags:
         - Account
-      summary: Search accounts
+      summary: Query accounts
       description: |2
           This endpoint retrieves the full details of an account that the requester is authorised to access
           - Supported Filters:
@@ -1315,7 +1313,7 @@ paths:
       tags:
         - Account
       summary: Create bank account
-      description: |2
+      description: |
           - Adds a bank account for the given `accountId`.
           - Either a `sort code` and `account number`, or an `IBAN`, is required
       operationId: createBankAccount
@@ -1813,10 +1811,9 @@ paths:
     post:
       tags:
         - Account
-      summary: Create relationship
+      summary: Create income options
       description: >-
-        Creates a relationship to be associated with account. Note that this
-        does not create a pseudo investor entry onto our system.
+        TBC
       operationId: createIncomeOptions
       parameters:
         - name: accountId
@@ -2057,9 +2054,12 @@ paths:
       tags:
         - Account
       summary: Activate account
-      description: |2
+      description: |
+          
           - This endpoint allows you to activate an existing investor account with a `status=PENDING` using the `accountID` as a unique identifier.
+          
           - The requester can only update an account they are authorised to access.
+          
           - If `testMode=true`, simulates account activation but rolls back changes after validation..
       operationId: activateAccount
       parameters:
