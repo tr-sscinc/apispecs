@@ -1,4 +1,5 @@
 openapi: 3.0.1
+
 info:
   title: SS&C API
   description: API Contract to integrate with SS&C Hubwise
@@ -10,6 +11,7 @@ info:
   license:
     name: SS&C API Restricted License
     url: https://docs.portal.hubwise.co.uk/api-restricted-license.pdf
+
 servers:
   - url: 'https://rest-sb.hubwise.co.uk/api/v2'
     description: Sandbox environment
@@ -34,7 +36,7 @@ tags:
   - name: Declarations
     description: > 
     
-      Handles regulatory declarations and compliance data.
+      Allows access to regulatory and compliance declarations.
 
 security:
   - bearer-token: []
@@ -69,13 +71,6 @@ paths:
         response payload will be required for investor and account maintenance.
         The endpoint must be called for each investor record.
       operationId: createInvestor
-      parameters:
-        - name: testMode
-          in: query
-          required: false
-          schema:
-            type: boolean
-            default: false
       requestBody:
         content:
           application/json:
@@ -285,79 +280,18 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/403-Forbidden'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /investors/{investorId}:
     get:
       tags:
         - Investor
       summary: Retrieve an investor by providing the unique investor identifier
-      description: |2
+      description: |
                 Retrieves the full details of a specific investor, an individual entity, using their unique SS&C Hubwise Investor ID generated when an investor is created.
                 This endpoint should be used when displaying detailed investor information. The response includes the investor’s core profile information, contact details, address records, territorial profile, and type-specific attributes for Individual, Corporate and Trust  investors.
                 Only investors that the requester is authorised to access will be returned.
@@ -507,72 +441,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /investors/{investorId}/vulnerabilities:
     post:
@@ -656,72 +531,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /investors/{investorId}/correspondences:
     post:
@@ -801,79 +617,20 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts:
     get:
       tags:
         - Account
       summary: Query accounts
-      description: |2
+      description: |
           This endpoint retrieves the full details of an account that the requester is authorised to access
           - Supported Filters:
             - `name` - Partial match on the account name (minimum 2 characters).
@@ -1016,79 +773,18 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/403-Forbidden'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
 
     post:
       tags:
         - Account
       summary: Create account
-      description: |2
+      description: |
           - This endpoint allows the creation of a new account against investor(s) that the requester has access to.
           - If `testMode=true`, simulates account creation but rolls back changes after validation.
       operationId: createAccount
@@ -1130,80 +826,18 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/403-Forbidden'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}:
     get:
       tags:
         - Account
       summary: Get account by id
-      description: |2
+      description: |
           - This endpoint retrieves the full details of an account using the unique `accountId`.
           - The requester can only retrieve an account they are authorised to access.
       operationId: getAccountById
@@ -1240,73 +874,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/bank-accounts:
     post:
@@ -1364,80 +938,20 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/money-movements:
     post:
       tags:
         - Account
       summary: Create Money Movement
-      description: |2
+      description: |
           - This endpoint allows the creation of a new money movement(s) against an account.
           - If `testMode=true`, simulates account creation but rolls back changes after validation.
       operationId: createMovements
@@ -1490,73 +1004,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/transfers:
     post:
@@ -1624,73 +1078,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/relationships:
     post:
@@ -1739,73 +1133,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
-
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/income-options:
     post:
@@ -1853,79 +1187,20 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/fees:
     post:
       tags:
         - Account
       summary: Create account fees
-      description: |2
+      description: |
          - This endpoint allows the creation of fee(s) against a single account an account using the unique `accountId`.
          - The requester can only create the fees against an account they are authorised to access.
          - Creates one or more Fee records for a specific account.
@@ -1982,72 +1257,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
   /accounts/{accountId}/activate:
     post:
@@ -2101,72 +1317,13 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
+          $ref: '#/components/responses/403-Forbidden'
         '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/404-NotFound'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
   
   /declarations:
     get:
@@ -2295,78 +1452,21 @@ paths:
                         resource: /investors
                         message: Invalid email format.
         '401':
-          description: Unauthorized - Valid JWT required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Unauthorized:
-                  summary: Missing/invalid token
-                  description: Unauthorized
-                  value:
-                    errorCode: HWA-EXCEPTION-006
-                    message: Authentication process failed.
-                    errors:
-                      - field: Authentication
-                        resource: /swagger.html
-                        message: Authentication token is missing or invalid.
+          $ref: '#/components/responses/401-Unorthorized'
         '403':
-          description: Forbidden - Access denied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Forbidden:
-                  summary: Access denied
-                  description: Forbidden
-                  value:
-                    errorCode: HWA-EXCEPTION-004
-                    message: Access denied.
-                    errors:
-                      - field: Authorization
-                        resource: /investors
-                        message: You do not have permission to access this resource.
-        '404':
-          description: Resource not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                NotFound:
-                  summary: Resource not found
-                  description: NotFound
-                  value:
-                    errorCode: HWA-INVESTOR-001
-                    message: The requested resource could not be found.
-                    errors:
-                      - field: investorId
-                        resource: /investors/HWI00000000
-                        message: id 'HWI00000000' does not exist.
+          $ref: '#/components/responses/403-Forbidden'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                TechnicalError:
-                  summary: Unexpected technical error
-                  description: TechnicalError
-                  value:
-                    errorCode: HWA-EXCEPTION-003
-                    message: An unexpected technical error occurred.
-                    errors:
-                      - resource: /investors
-                        message: Unexpected exception during processing.
+          $ref: '#/components/responses/500-ServerError'
 
 components:
+  
   schemas:
     
     Error:
       type: object
+      required:
+        - errorCode
+        - message
       properties:
         errorCode:
           type: string
@@ -2384,6 +1484,8 @@ components:
     
     ErrorDetail:
       type: object
+      required:
+        - message
       properties:
         field:
           type: string
@@ -4780,7 +3882,7 @@ components:
         crystallisedValue:
           maxLength: 11
           type: number
-          description: |2
+          description: |
               Applicable for pension products
           example: 0
         uncrystallisedValue:
@@ -4945,6 +4047,67 @@ components:
           $ref: '#/components/schemas/AuditInfo'
       description: Investor Vulnerability Model
   
+  responses:
+    
+    401-Unorthorized:
+      description: Unauththenticated request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Ex1:
+              summary: Invalid API token
+              value:
+                errorCode: HWA-EXCEPTION-006
+                message: Missing, Expired or API token
+            Ex2:
+              summary: Invalid bearer token
+              value:
+                errorCode: HWA-EXCEPTION-006
+                message: Missing, Expired or invalid token
+
+    403-Forbidden:
+      description: Unorthorised request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Forbidden:
+              summary: Requester not allowed access to the resource
+              description: Forbidden
+              value:
+                errorCode: HWA-EXCEPTION-004
+                message: You do not have permission to access this resource
+
+    404-NotFound:
+      description: The resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            NotFound:
+              summary: Resource not found
+              description: NotFound
+              value:
+                errorCode: HWA-INVESTOR-001
+                message: The requested resource could not be found.
+
+    500-ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Ex1:
+              summary: Unexpected technical error.
+              value:
+                errorCode: HWA-EXCEPTION-003
+                message: An unexpected technical error occurred.
+
   securitySchemes:
     bearer-token:
       type: http
