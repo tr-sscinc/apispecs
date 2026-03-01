@@ -269,16 +269,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -430,16 +422,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -520,16 +506,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -606,16 +588,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -762,16 +740,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -815,16 +785,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -863,16 +825,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -927,16 +885,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -993,16 +947,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1067,16 +1017,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1122,16 +1068,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1176,16 +1118,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1246,16 +1184,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1306,16 +1240,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                PathParam:
+                  $ref: '#/components/examples/400-BadRequest-Path'
+                QueryParam:
+                  $ref: '#/components/examples/400-BadRequest-Query'
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1441,16 +1371,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                ValidationError:
-                  summary: Validation Error
-                  description: ValidationError
-                  value:
-                    errorCode: HWA-EXCEPTION-001
-                    message: Validation Error(s) occurred.
-                    errors:
-                      - field: individual.contactDetails.email
-                        resource: /investors
-                        message: Invalid email format.
+                RequestBody:
+                  $ref: '#/components/examples/400-BadRequest-Requestbody'
         '401':
           $ref: '#/components/responses/401-Unorthorized'
         '403':
@@ -1464,6 +1386,7 @@ components:
     
     Error:
       type: object
+      description: A standard error response.
       required:
         - errorCode
         - message
@@ -1471,35 +1394,38 @@ components:
         errorCode:
           type: string
           description: Application-specific error code that uniquely identifies the error.
-          example: HWA-EXCEPTION-001
         message:
           type: string
           description: Human-readable error message providing more context about the error.
-          example: Validation Errors
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorDetail'
-      description: Represents a standard error response.
-    
-    ErrorDetail:
+            $ref: '#/components/schemas/RequestValidationIssue'
+
+    RequestValidationIssue:
       type: object
+      description: |
+          A collection of validation issues with the request.
       required:
         - message
       properties:
         field:
+          x-ssc-obsolete: true
           type: string
-          description: 'The name of the field that caused the error, if applicable.'
-          example: email
         resource:
+          x-ssc-obsolete: true
           type: string
-          description: The resource or entity associated with the error.
-          example: User
+        jsonPath:
+          type: string
+          description: |-
+            If a request body is passed, the JSON Path expression pointing to the value in the request body which caused the validation failure.
+
+
+            The RFC standard for JSON Path: https://www.rfc-editor.org/rfc/rfc9535.html 
         message:
           type: string
-          description: Detailed error message related to the field or resource.
-          example: Email format is invalid
-      description: List of detailed errors for specific fields or conditions.
+          description: Detailed error message about the request validation failure.
+      
 
     AccountModel:
       required:
@@ -4047,7 +3973,36 @@ components:
           $ref: '#/components/schemas/AuditInfo'
       description: Investor Vulnerability Model
   
-  responses:
+  examples:
+
+    400-BadRequest-Path:
+      summary: Path parameter does not conform to API schema
+      value:
+        errorCode: HWA2-0010
+        message: Invalid path paramter(s)
+        errors:
+          - message: id must start with 'HW'
+
+    400-BadRequest-Query:
+      summary: Query parameter does not conform to API schema
+      value:
+        errorCode: HWA2-0011
+        message: Invalid query parameter(s)
+        errors:
+          - message: from-date must be before to-date
+
+    400-BadRequest-Requestbody:
+      summary: Request body does not conform to API schema
+      value:
+        errorCode: HWA-EXCEPTION-001
+        message: The request body failed validation
+        errors:
+          - jsonPath: $.store.book[2].author.email
+            message: Invalid email address format
+          - jsonPath: $.store.book[2].publishDateTime
+            message: Dates should be in ISO8601 format
+  
+  responses:              
     
     401-Unorthorized:
       description: Unauththenticated request
@@ -4074,7 +4029,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
           examples:
-            Forbidden:
+            Ex1:
               summary: Requester not allowed access to the resource
               description: Forbidden
               value:
@@ -4088,7 +4043,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
           examples:
-            NotFound:
+            Ex1:
               summary: Resource not found
               description: NotFound
               value:
@@ -4106,36 +4061,26 @@ components:
               summary: Unexpected technical error.
               value:
                 errorCode: HWA-EXCEPTION-003
-                message: An unexpected technical error occurred.
+                message: |-
+                  An unexpected technical error occurred. 
+                  
+                  
+                  Do not retry the call before the time specified in the Retry-After HTTP response header. If no Retry-After header is returned, do not retry the call. 
 
   securitySchemes:
     bearer-token:
       type: http
-      description: >
-        **The API operations may require HTTP Bearer authentication scheme with
-        JWT format as defined in Open API 3.0.**
-
-        An Authorization header must be present if the operation requires
-        authorization, 
-
-
-        for example:
-
-        ```
-
-        Authorization: Bearer token-value 
-
-        ```
       scheme: bearer
       bearerFormat: JWT
+
     x-api-key:
       type: apiKey
       description: |-
-        **API key header used for tenant-level authorization.**
+        **An API key header used for authorizing the API Tenant. **
 
         For example:
         ```
-        x-api-key: x-api-key-value
+        x-api-key: 966f-95e1-a672-fab0-c9bd-b550-f653-6f60
         ```
       name: x-api-key
       in: header
