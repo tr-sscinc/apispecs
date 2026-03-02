@@ -869,7 +869,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Bank'
+              $ref: '#/components/schemas/BankAccount'
         required: true
       responses:
         '201':
@@ -877,7 +877,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BankDetails'
+                $ref: '#/components/schemas/BankAccount'
         '400':
           description: Bad request
           content:
@@ -1822,158 +1822,82 @@ components:
         auditInfo:
           $ref: '#/components/schemas/AuditInfo'
     
-    Relationship:
+    BankAccountHolder:
       required:
         - id
       type: object
+      description: Identifies the investor account holder or third party account holder.
       properties:
         id:
           maxLength: 11
           minLength: 0
           type: string
-          description: 'Populate id with investor id, employer id or third party id.'
-          example: HW00013174A
-        verificationFlag:
+          description: The identifier of the investor holding the account. For third party account holders use the third party sequence number. 
+        thirdParty:
           type: boolean
-          description: Use this owner for bank verification check
-          example: true
-      description: Investor or third party details related to this bank account
+          default: false
+          description: Indicates if the bank account holder is a third party to the investment - for example, an employer. Defaults to false.
     
-    Bank:
+    BankAccount:
       required:
-        - bankAccountName
+        - name
+        - holders
       type: object
+      readOnly: true
       properties:
-        bankName:
+        name:
           maxLength: 70
-          minLength: 0
+          minLength: 5
           type: string
-          description: Name of the bank
-          example: HSBC UK
-        bankAccountName:
-          maxLength: 70
-          minLength: 0
+          description: The name of the account holder.
+        currency:
           type: string
-          description: Bank account Name
-          example: Mr G Simpson
-        bankAccountNumber:
-          maxLength: 10
-          minLength: 0
-          type: string
-          description: Bank account number
-          example: '50220369'
-        bankSortCode:
-          maxLength: 6
-          pattern: '\d{6}'
-          type: string
-          description: Sort code (6-digit UK format)
-          example: '700125'
-        iban:
-          maxLength: 34
-          minLength: 0
-          type: string
-          description: IBAN (International Bank Account Number)
-          example: GB29NWBK60161331926819
-        accountHolders:
-          maxItems: 20
-          minItems: 0
-          type: array
-          description: Bank Account Owner(s)
-          items:
-            $ref: '#/components/schemas/Relationship'
-      description: Bank details payload
-    
-    BankDetails:
-      required:
-        - bankAccountName
-      type: object
-      properties:
-        bankName:
-          maxLength: 70
-          minLength: 0
-          type: string
-          description: Name of the bank
-          example: HSBC UK
-        bankAccountName:
-          maxLength: 70
-          minLength: 0
-          type: string
-          description: Bank account Name
-          example: Mr G Simpson
-        bankAccountNumber:
-          maxLength: 10
-          minLength: 0
-          type: string
-          description: Bank account number
-          example: '50220369'
-        bankSortCode:
-          maxLength: 6
-          pattern: '\d{6}'
-          type: string
-          description: Sort code (6-digit UK format)
-          example: '700125'
-        iban:
-          maxLength: 34
-          minLength: 0
-          type: string
-          description: IBAN (International Bank Account Number)
-          example: GB29NWBK60161331926819
-        accountHolders:
-          maxItems: 20
-          minItems: 0
-          type: array
-          description: Bank Account Owner(s)
-          items:
-            $ref: '#/components/schemas/Relationship'
+          default: GBP
+          minLength: 3
+          maxLength: 3
+          description: The ISO 4217 currency code of the bank account. Defaults to GBP. 
         accountId:
           maxLength: 11
           type: string
-          description: Account ID
+          description: The identifier of the investment account.
           readOnly: true
-          example: HW04002456A
-        customerId:
-          maxLength: 7
-          type: string
-          description: Customer ID
-          readOnly: true
-          example: HUBWISE
-        adviserId:
-          maxLength: 11
-          type: string
-          description: Adviser ID
-          readOnly: true
-          example: E003444
-        multiOwnedAccount:
-          type: boolean
-          description: Indicates if account is multi-owned
-          readOnly: true
-          example: true
         status:
           type: string
           description: Status of the bank account
           readOnly: true
-          example: ACTIVE
           enum:
             - ACTIVE
-            - UNCHECKED
-            - REFERRED
-            - DELETED
             - NEW
+            - REFERRED
             - REJECTED
-            - AUTHORIZE
-            - REFERREDINT
             - SUBMITTED
-        bankVerificationDate:
+            - UNCHECKED
+        number:
+          pattern: ^\d{5,15}$
           type: string
-          description: Date when the bank account was verified
-          format: date
-          readOnly: true
-          example: '2025-04-18'
-        auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: >-
-        Full bank account details including ownership, status and audit
-        information.
+          description: Account number. Required for GBP and USD bank accounts.
+          example: '00220369'
+        sortCode:
+          pattern: ^\d{6}$
+          type: string
+          description: Sort code, without hyphens. Required for GBP accounts.
+          example: '700125'
+        iban:
+          pattern: ^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$
+          type: string
+          description: IBAN (ISO 13616), without spaces. Required for EUR bank accounts. 
+          example: GB29NWBK60161331926819
+        bicSwift:
+          pattern: ^[A-Za-z]{6}[2-9A-Za-z][0-9A-Na-nP-Zp-z]([A-Za-z0-9]{3}|x{3})?$
+          type: string
+          description: BIC or Swift code (ISO 9362), either 8 or 11 characters. Required for EUR and USD bank accounts. 
+        holders:
+          maxItems: 20
+          minItems: 1
+          type: array
+          description: The one or more holders of the bank account. 
+          items:
+            $ref: '#/components/schemas/BankAccountHolder'
     
     AuditInfo:
       type: object
