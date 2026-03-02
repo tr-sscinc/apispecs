@@ -870,7 +870,78 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BankAccount'
-        required: true
+            examples:
+              Ex1:
+                summary: Add a customer's bank account to their investment account 
+                value:
+                  {
+                    "name": "Jane Doe",
+                    "number": "87654321",
+                    "sortCode": "309894",
+                    "holders": [
+                      {
+                        "id": "HW00013200A"
+                      }
+                    ]
+                  }
+              Ex2:
+                summary: Add a multi-holder bank account to a customer's investment account
+                value: 
+                  {
+                    "name": "Jane Doe",
+                    "number": "87654321",
+                    "sortCode": "309894",
+                    "holders": [
+                      {
+                        "id": "HW00013200A"
+                      },
+                      {
+                        "id": "HW00013300A"
+                      }
+                    ]
+                  }
+              Ex3:
+                summary: Add a third party's bank account to a customer's investment account
+                value:
+                  {
+                    "name": "Jane Doe Enterprises LTD",
+                    "number": "87654321",
+                    "sortCode": "309894",
+                    "holders": [
+                      {
+                        "id": "1",
+                        "thirdParty": true
+                      }
+                    ]
+                  }
+              Ex4:
+                summary: Add a customer's EUR bank account to their investment account
+                value:
+                  {
+                    "currency": "EUR",
+                    "name": "Erika Mustermann",
+                    "iban": "DE75512108001245126199",
+                    "bicSwift": "DEUTDEFF",
+                    "holders": [
+                      {
+                        "id": "HW00013200A"
+                      }
+                    ]
+                  }
+              Ex5:
+                summary: Add a customer's USD bank account to their investment account
+                value:
+                  {
+                    "currency": "USD",
+                    "name": "Jane Doe",
+                    "number": "123456789012",
+                    "bicSwift": "BOFAUS6S",
+                    "holders": [
+                      {
+                        "id": "HW00013200A"
+                      }
+                    ]
+                  }
       responses:
         '201':
           description: Bank account created successfully.
@@ -1839,9 +1910,23 @@ components:
           description: Indicates if the bank account holder is a third party to the investment - for example, an employer. Defaults to false.
     
     BankAccount:
-      required:
-        - name
-        - holders
+      oneOf:
+        - required:
+            - name
+            - holders
+            - number
+            - sortCode
+        - required:
+            - name
+            - holders
+            - iban
+            - bicSwift
+        - required:
+            - name
+            - holders
+            - number
+            - bicSwift
+      
       type: object
       readOnly: true
       properties:
@@ -1876,17 +1961,14 @@ components:
           pattern: ^\d{5,15}$
           type: string
           description: Account number. Required for GBP and USD bank accounts.
-          example: '00220369'
         sortCode:
           pattern: ^\d{6}$
           type: string
           description: Sort code, without hyphens. Required for GBP accounts.
-          example: '700125'
         iban:
           pattern: ^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$
           type: string
           description: IBAN (ISO 13616), without spaces. Required for EUR bank accounts. 
-          example: GB29NWBK60161331926819
         bicSwift:
           pattern: ^[A-Za-z]{6}[2-9A-Za-z][0-9A-Na-nP-Zp-z]([A-Za-z0-9]{3}|x{3})?$
           type: string
