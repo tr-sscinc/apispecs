@@ -1,9 +1,14 @@
 openapi: 3.0.1
 
 info:
-  title: SS&C API
-  description: API Contract to integrate with SS&C Hubwise
-  version: 2.0.0-Saltus
+  title: SS&C Hubwise API
+  description: |
+
+    Welcome to the SS&C Hubwise API. 
+    
+    Our API has been designed to allow our customers to quickly integrate with Hubwise, whether you're accessing portfolio data, managing client investments, or automating operational flows.
+
+  version: 0.1.4-Saltus
   contact:
     email: apidevs@sscinc.com
     name: SS&C Hubwise API Support  
@@ -13,12 +18,9 @@ info:
     url: https://docs.portal.hubwise.co.uk/api-restricted-license.pdf
 
 servers:
-  - url: 'https://rest-sb.hubwise.co.uk/api/v2'
-    description: Sandbox environment
   - url: 'https://rest-qd.hubwise.co.uk/api/v2'
     description: Pilot/UAT environment
-  - url: 'https://rest.hubwise.co.uk/api/v2'
-    description: Live environment
+
 
 tags:
   - name: Account
@@ -142,7 +144,7 @@ paths:
                       }
                     ]
                   }
-        required: true
+        
       responses:
         '201':
           description: Investor created successfully.
@@ -4081,12 +4083,5 @@ components:
 
     x-api-key:
       type: apiKey
-      description: |-
-        **An API key header used for authorizing the API Tenant. **
-
-        For example:
-        ```
-        x-api-key: 966f-95e1-a672-fab0-c9bd-b550-f653-6f60
-        ```
       name: x-api-key
       in: header
