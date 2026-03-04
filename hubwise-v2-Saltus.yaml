@@ -1,168 +1,62 @@
 openapi: 3.0.1
-
 info:
   title: SS&C Hubwise API
-  description: |
-
-    Welcome to the SS&C Hubwise API. 
-    
-    Our API has been designed to allow our customers to quickly integrate with Hubwise, whether you're accessing portfolio data, managing client investments, or automating operational flows.
-
-  version: 0.1.4-Saltus
+  version: 2.0.0-Saltus
+  description: API Contract to integrate with SS&C Hubwise
   contact:
     email: apidevs@sscinc.com
-    name: SS&C Hubwise API Support  
+    name: SS&C Hubwise API Support
     url: https://docs.portal.hubwise.co.uk/
   license:
     name: SS&C API Restricted License
     url: https://docs.portal.hubwise.co.uk/api-restricted-license.pdf
 
 servers:
-  - url: 'https://rest-qd.hubwise.co.uk/api/v2'
+  - url: "https://rest-qd.hubwise.co.uk/api/v2"
     description: Pilot/UAT environment
-
 
 tags:
   - name: Account
-    description: >-
-      Enables the creation, retrieval, modification, and removal of investment accounts within the SS&C Hubwise platform.
-
-
-      GIA, SIPP and other account types are supported. 
   - name: Investor
-    description: >
-      Enables the creation, retrieval, modification, and removal of investor records within the SS&C Hubwise platform. 
-      
-      
-      Individual, Corporate and Trust investor types are supported.
   - name: Declarations
-    description: > 
-    
-      Allows access to regulatory and compliance declarations.
 
 security:
   - bearer-token: []
   - x-api-key: []
 
 paths:
-  
   /investors:
     post:
       tags:
         - Investor
       summary: Create an Investor
       description: >
-        Allows the creation of a specific investor, an individual entity. It
-        supports the creation of Individual, Corporate and  Trust investors. The
-        required data varies depending on the investor type and includes the
-        investor's core profile information, contact details, 1 or more
-        addresses and 1 or more territorial profiles.
+        Allows the creation of a specific investor, an individual entity. It supports the creation of Individual, Corporate and  Trust investors. The required data varies depending on the investor type and includes the investor's core profile information, contact details, 1 or more addresses and 1 or more territorial profiles.
 
-        This endpoint should be used when creating new investor records. The Get
-        Declaration Templates API can be used to identify required declarations
-        that must be included in the request message. An investor can have a
-        maximum of 10 addresses, 5 nationalities and tax residencies. The
-        investor record id returned in the response payload will be required for
-        investor and account maintenance. The endpoint must be called for each
-        investor
-        record.                                                                                                                                                                                                                                                                                                                                                                                                                                    
-        This endpoint should be used when creating new investor records. The Get
-        Declaration Templates API can be used to identify required declarations
-        that must be included in the request message. An investor can have a
-        maximum of 5 active addresses. The investor record id returned in the
-        response payload will be required for investor and account maintenance.
-        The endpoint must be called for each investor record.
+
+        This endpoint should be used when creating new investor records. The Get Declaration Templates API can be used to identify required declarations that must be included in the request message. An investor can have a maximum of 10 addresses, 5 nationalities and tax residencies. The investor record id returned in the response payload will be required for investor and account maintenance. The endpoint must be called for each investor record.
       operationId: createInvestor
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InvestorModel'
+              $ref: "#/components/schemas/Investor"
             examples:
-              Ex1: 
-                summary: Create an Investor
+              Ex1:
+                summary: Investor is an individual
                 value:
                   {
-                    "adviserId": "",
+                    "adviserId": "E273053",
                     "type": "INDIVIDUAL",
-                    "individual": {
-                      "title": "OTHER",
-                      "titleOtherValue": "General",
-                      "firstName": "Sam",
-                      "middleName": "John",
-                      "surname": "Smith",
-                      "dateOfBirth": "2000-02-20",
-                      "gender": "MALE",
-                      "maritalStatus": "MARRIED",
-                      "incomeAndInvestment": {
-                        "occupation": "OTHER",
-                        "occupationOtherValue": "Management Consultant",
-                        "industry": "OTHER",
-                        "industryOtherValue": "Consulting Services",
-                        "annualIncome": "FROM_50K_TO_75K",
-                        "investmentReason": "GROW_WEALTH",
-                        "investmentAgreedInPerson": true
-                      },
-                      "allowance": {},
-                      "territorialProfile": {
-                        "nationalities": [
-                          {
-                            "countryCode": "GB",
-                            "primary": true
-                          }
-                        ],
-                        "taxResidencies": [
-                          {
-                            "countryCode": "GB",
-                            "primary": true,
-                            "tin": "AC123456C",
-                            "lei": "5493001KJTIIGC8Y1R12"
-                          }
-                        ]
-                      },
-                      "contactDetails": {
-                        "contactPhone": "01619465555",
-                        "homePhone": "01619464444",
-                        "mobilePhone": "07877156340",
-                        "email": "john.doe@outlook.com"
-                      },
-                      "notificationsPreferences": {
-                        "disableEmails": false,
-                        "disableSms": false
-                      }
-                    },
-                    "addresses": [
+                    "external":
+                      [
+                        {
+                          "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                          "provider": "Curo",
+                        },
+                      ],
+                    "individual":
                       {
-                        "primary": true,
-                        "premisesIdentifier": "12",
-                        "line1": "Rosewood Cottage",
-                        "line2": "Elm Street",
-                        "town": "Hightown",
-                        "county": "Lancashire",
-                        "postCode": "HT3 4AB",
-                        "countryCode": "GB"
-                      }
-                    ]
-                  }
-        
-      responses:
-        '201':
-          description: Investor created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvestorModel'
-              examples:
-                Ex1:
-                  summary: create an investor
-                  value:
-                    {
-                      "id": "HWI04003219",
-                      "tenantId": "HUBWISE",
-                      "adviserId": "E007290",
-                      "type": "INDIVIDUAL",
-                      "status": "NEW",
-                      "individual": {
                         "title": "OTHER",
                         "titleOtherValue": "General",
                         "firstName": "Sam",
@@ -171,114 +65,399 @@ paths:
                         "dateOfBirth": "2000-02-20",
                         "gender": "MALE",
                         "maritalStatus": "MARRIED",
-                        "incomeAndInvestment": {
-                          "occupation": "OTHER",
-                          "occupationOtherValue": "Management Consultant",
-                          "industry": "OTHER",
-                          "industryOtherValue": "Consulting Services",
-                          "annualIncome": "FROM_50K_TO_75K",
-                          "investmentReason": "GROW_WEALTH",
-                          "investmentAgreedInPerson": true,
-                          "auditInfo": {
-                            "createdByUser": "E004490",
-                            "createdOn": "2026-02-16T19:31:19Z",
-                            "changedByUser": "E004490",
-                            "changedOn": "2026-02-16T19:31:19Z"
-                          }
-                        },
-                        "allowance": {
-                          "remainingAllowance": 20000,
-                          "subscribedAmount": 0
-                        },
-                        "territorialProfile": {
-                          "nationalities": [
-                            {
-                              "id": 1,
-                              "countryCode": "GB",
-                              "primary": true,
-                              "auditInfo": {
-                                "createdByUser": "E004490",
-                                "createdOn": "2026-02-16T19:31:19Z",
-                                "changedByUser": "E004490",
-                                "changedOn": "2026-02-16T19:31:19Z"
-                              }
-                            }
-                          ],
-                          "taxResidencies": [
-                            {
-                              "id": 1,
-                              "countryCode": "GB",
-                              "primary": true,
-                              "tin": "AC123456C",
-                              "lei": "5493001KJTIIGC8Y1R12",
-                              "auditInfo": {
-                                "createdByUser": "E004490",
-                                "createdOn": "2026-02-16T19:31:19Z",
-                                "changedByUser": "E004490",
-                                "changedOn": "2026-02-16T19:31:19Z"
-                              }
-                            }
-                          ]
-                        },
-                        "contactDetails": {
-                          "contactPhone": "01619465555",
-                          "homePhone": "01619464444",
-                          "mobilePhone": "07877156340",
-                          "email": "john.doe@outlook.com"
-                        },
-                        "notificationsPreferences": {
-                          "disableEmails": false,
-                          "disableSms": false
-                        },
-                        "auditInfo": {
-                          "createdByUser": "E004490",
-                          "createdOn": "2026-02-16T19:31:19Z",
-                          "changedByUser": "E004490",
-                          "changedOn": "2026-02-16T19:31:19Z"
-                        }
+                        "incomeAndInvestment":
+                          {
+                            "occupation": "OTHER",
+                            "occupationOtherValue": "Management Consultant",
+                            "industry": "OTHER",
+                            "industryOtherValue": "Consulting Services",
+                            "annualIncome": "FROM_50K_TO_75K",
+                            "investmentReason": "GROW_WEALTH",
+                            "investmentAgreedInPerson": true,
+                          },
+                        "territorialProfile":
+                          {
+                            "nationalities":
+                              [{ "countryCode": "GB", "primary": true }],
+                            "taxResidencies":
+                              [
+                                {
+                                  "countryCode": "GB",
+                                  "tin": "AC123456C",
+                                  "primary": true,
+                                },
+                              ],
+                          },
+                        "contactDetails":
+                          {
+                            "contactPhone": "01619465555",
+                            "homePhone": "01619464444",
+                            "mobilePhone": "07877156340",
+                            "email": "john.doe@outlook.com",
+                          },
+                        "notificationPreferences":
+                          { "disableEmails": false, "disableSms": false },
                       },
-                      "addresses": [
+                    "addresses":
+                      [
                         {
-                          "id": 1,
-                          "primary": true,
                           "premisesIdentifier": "12",
                           "line1": "Rosewood Cottage",
                           "line2": "Elm Street",
                           "town": "Hightown",
                           "county": "Lancashire",
-                          "postCode": "HT3 4AB",
                           "countryCode": "GB",
-                          "auditInfo": {
-                            "createdByUser": "E004490",
-                            "createdOn": "2026-02-16T19:31:19Z",
-                            "changedByUser": "E004490",
-                            "changedOn": "2026-02-16T19:31:19Z"
-                          }
-                        }
+                          "postCode": "HT3 4AB",
+                          "primary": true,
+                        },
                       ],
-                      "auditInfo": {
-                        "createdByUser": "E004490",
-                        "createdOn": "2026-02-16T19:31:19Z",
-                        "changedByUser": "E004490",
-                        "changedOn": "2026-02-16T19:31:19Z"
-                      }
+                    "declarations":
+                      [
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "IFA_FCA_AUTH",
+                          "acknowledgement": true,
+                        },
+                      ],
+                  }
+              Ex2:
+                summary: Investor is a discretionary trust
+                value:
+                  {
+                    "adviserId": "E273054",
+                    "type": "DISCRETIONARY_TRUST",
+                    "external":
+                      [
+                        {
+                          "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                          "provider": "Curo",
+                        },
+                      ],
+                    "trust":
+                      {
+                        "legalName": "Evergreen Family Trust",
+                        "contactDetails":
+                          {
+                            "contactPhone": "01619887766",
+                            "homePhone": "01619887777",
+                            "mobilePhone": "07799123456",
+                            "email": "trustee@evergreentrust.co.uk",
+                          },
+                        "notificationPreferences":
+                          { "disableEmails": false, "disableSms": false },
+                      },
+                    "addresses":
+                      [
+                        {
+                          "premisesIdentifier": "7",
+                          "line1": "Willow House",
+                          "line2": "Riverside Estate",
+                          "town": "Northford",
+                          "county": "Westshire",
+                          "countryCode": "GB",
+                          "postCode": "NF13 2XY",
+                          "primary": true,
+                        },
+                      ],
+                    "declarations":
+                      [
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "IFA_FCA_AUTH",
+                          "acknowledgement": true,
+                        },
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "LEI_NOT_REQ",
+                          "acknowledgement": true,
+                        },
+                      ],
+                  }
+              Ex3:
+                summary: Investor is a corporate
+                value:
+                  {
+                    "adviserId": "E273053",
+                    "type": "CORPORATE",
+                    "external":
+                      [
+                        {
+                          "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                          "provider": "Curo",
+                        },
+                      ],
+                    "corporate":
+                      {
+                        "legalName": "Silver Oak Holdings Ltd",
+                        "territorialProfile":
+                          {
+                            "taxResidencies":
+                              [
+                                {
+                                  "countryCode": "GB",
+                                  "lei": "5493001KJTIIGC8Y1R12",
+                                },
+                              ],
+                          },
+                        "contactDetails":
+                          {
+                            "contactPhone": "01619887766",
+                            "homePhone": "01619887777",
+                            "mobilePhone": "07799123456",
+                            "email": "info@silveroakholdings.co.uk",
+                          },
+                        "notificationPreferences":
+                          { "disableEmails": false, "disableSms": false },
+                      },
+                    "addresses":
+                      [
+                        {
+                          "premisesIdentifier": "15",
+                          "line1": "Maple House",
+                          "line2": "Business Park Avenue",
+                          "town": "Northford",
+                          "county": "Westshire",
+                          "countryCode": "GB",
+                          "postCode": "NF12 8XY",
+                          "primary": true,
+                        },
+                      ],
+                    "declarations":
+                      [
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "IFA_FCA_AUTH",
+                          "acknowledgement": true,
+                        },
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "LEI_NOT_REQ",
+                          "acknowledgement": false,
+                        },
+                      ],
+                  }
+
+      responses:
+        "201":
+          description: Investor created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Investor"
+              examples:
+                Ex1:
+                  summary: Investor is an individual
+                  value:
+                    {
+                      "id": "HWI04003219",
+                      "adviserId": "E273053",
+                      "type": "INDIVIDUAL",
+                      "external":
+                        [
+                          {
+                            "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                            "provider": "Curo",
+                          },
+                        ],
+                      "individual":
+                        {
+                          "title": "OTHER",
+                          "titleOtherValue": "General",
+                          "firstName": "Sam",
+                          "middleName": "John",
+                          "surname": "Smith",
+                          "dateOfBirth": "2000-02-20",
+                          "gender": "MALE",
+                          "maritalStatus": "MARRIED",
+                          "incomeAndInvestment":
+                            {
+                              "occupation": "OTHER",
+                              "occupationOtherValue": "Management Consultant",
+                              "industry": "OTHER",
+                              "industryOtherValue": "Consulting Services",
+                              "annualIncome": "FROM_50K_TO_75K",
+                              "investmentReason": "GROW_WEALTH",
+                              "investmentAgreedInPerson": true,
+                            },
+                          "territorialProfile":
+                            {
+                              "nationalities":
+                                [{ "countryCode": "GB", "primary": true }],
+                              "taxResidencies":
+                                [
+                                  {
+                                    "countryCode": "GB",
+                                    "tin": "AC123456C",
+                                    "primary": true,
+                                  },
+                                ],
+                            },
+                          "contactDetails":
+                            {
+                              "contactPhone": "01619465555",
+                              "homePhone": "01619464444",
+                              "mobilePhone": "07877156340",
+                              "email": "john.doe@outlook.com",
+                            },
+                          "notificationPreferences":
+                            { "disableEmails": false, "disableSms": false },
+                        },
+                      "addresses":
+                        [
+                          {
+                            "premisesIdentifier": "12",
+                            "line1": "Rosewood Cottage",
+                            "line2": "Elm Street",
+                            "town": "Hightown",
+                            "county": "Lancashire",
+                            "countryCode": "GB",
+                            "postCode": "HT3 4AB",
+                            "primary": true,
+                          },
+                        ],
+                      "declarations":
+                        [
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "IFA_FCA_AUTH",
+                            "acknowledgement": true,
+                          },
+                        ],
                     }
-              
-        '400':
+                Ex2:
+                  summary: Investor is a discretionary trust
+                  value:
+                    {
+                      "id": "HWI04003219",
+                      "adviserId": "E273054",
+                      "type": "DISCRETIONARY_TRUST",
+                      "external":
+                        [
+                          {
+                            "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                            "provider": "Curo",
+                          },
+                        ],
+                      "trust":
+                        {
+                          "legalName": "Evergreen Family Trust",
+                          "contactDetails":
+                            {
+                              "contactPhone": "01619887766",
+                              "homePhone": "01619887777",
+                              "mobilePhone": "07799123456",
+                              "email": "trustee@evergreentrust.co.uk",
+                            },
+                          "notificationPreferences":
+                            { "disableEmails": false, "disableSms": false },
+                        },
+                      "addresses":
+                        [
+                          {
+                            "premisesIdentifier": "7",
+                            "line1": "Willow House",
+                            "line2": "Riverside Estate",
+                            "town": "Northford",
+                            "county": "Westshire",
+                            "countryCode": "GB",
+                            "postCode": "NF13 2XY",
+                            "primary": true,
+                          },
+                        ],
+                      "declarations":
+                        [
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "IFA_FCA_AUTH",
+                            "acknowledgement": true,
+                          },
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "LEI_NOT_REQ",
+                            "acknowledgement": true,
+                          },
+                        ],
+                    }
+                Ex3:
+                  summary: Investor is a corporate
+                  value:
+                    {
+                      "id": "HWI04003219",
+                      "adviserId": "E273053",
+                      "type": "CORPORATE",
+                      "external":
+                        [
+                          {
+                            "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                            "provider": "Curo",
+                          },
+                        ],
+                      "corporate":
+                        {
+                          "legalName": "Silver Oak Holdings Ltd",
+                          "territorialProfile":
+                            {
+                              "taxResidencies":
+                                [
+                                  {
+                                    "countryCode": "GB",
+                                    "lei": "5493001KJTIIGC8Y1R12",
+                                  },
+                                ],
+                            },
+                          "contactDetails":
+                            {
+                              "contactPhone": "01619887766",
+                              "homePhone": "01619887777",
+                              "mobilePhone": "07799123456",
+                              "email": "info@silveroakholdings.co.uk",
+                            },
+                          "notificationPreferences":
+                            { "disableEmails": false, "disableSms": false },
+                        },
+                      "addresses":
+                        [
+                          {
+                            "premisesIdentifier": "15",
+                            "line1": "Maple House",
+                            "line2": "Business Park Avenue",
+                            "town": "Northford",
+                            "county": "Westshire",
+                            "countryCode": "GB",
+                            "postCode": "NF12 8XY",
+                            "primary": true,
+                          },
+                        ],
+                      "declarations":
+                        [
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "IFA_FCA_AUTH",
+                            "acknowledgement": true,
+                          },
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "LEI_NOT_REQ",
+                            "acknowledgement": false,
+                          },
+                        ],
+                    }
+
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /investors/{investorId}/vulnerabilities:
     post:
@@ -286,36 +465,16 @@ paths:
         - Investor
       summary: Create investor vulnerabilities
       description: >
-        - Allows the creation of 1 or more characteristics of vulnerabilities
-        for a specific investor using their unique SS&C Hubwise Investor ID
-        which is
+        Allows the creation of 1 or more characteristics of vulnerabilities for a specific investor using their unique SS&C Hubwise Investor ID which is generated when an investor is created. This is only applicable to an investor type of Individual or Court Appointed Deputy.  The endpoint must be called for each investor record.
 
-        - generated when an investor is created. This is only applicable to an
-        investor type of Individual or Court Appointed Deputy.
 
-        - The characteristics of vulnerabilities endpoint should be used when
-        creating new characteristics of vulnerabilities records against an
-        existing
+        The characteristics of vulnerabilities endpoint should be used when creating new characteristics of vulnerabilities records against an existing investor record.  Vulnerabilities and the associated service level must be provided for each record. If a start date is not provided it will be defaulted to the current date. 
 
-        - investor card. Vulnerabilities and the associated service level must
-        be provided for each record. If a start date is not provided it will be
 
-        - defaulted to the current date.
+        The Get Declaration Templates API can be used to identify any required declarations that must be included in the request message.
 
-        - If declaration templates are required from the declaration API they
-        must be included in the request message. The endpoint must be called for
 
-        - each investor record.
-
-        - If the investor does not exist or the requester lacks permission, an
-        appropriate error response will be returned. Only investors that the
-        requester
-
-        - is authorised to access can be used. If characteristics of
-        vulnerabilities already exists aginst the investor, the update endpoint
-        needs to be used
-
-        - and an appropriate error response will be returned.
+        If the investor does not exist or the requester lacks permission, an appropriate error response will be returned. Only investors that the requester is authorised to access can be used. If characteristics of vulnerabilities already exists against the investor, the update endpoint needs to be used and an appropriate error response will be returned.
       operationId: createVulnerabilities
       parameters:
         - name: testMode
@@ -335,36 +494,95 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
+              $ref: "#/components/schemas/VulnerabilityHeader"
+            examples:
+              Ex1:
+                summary: Characteristics of a vulnerable investor
+                value:
+                  {
+                    "vulnerabilities":
+                      [
+                        {
+                          "type": "HEALTH",
+                          "serviceLevel": "SPEAK_LOUDLY_AND_CLEARLY",
+                          "startDate": "2025-10-01",
+                          "expiryDate": "2025-10-22",
+                        },
+                        {
+                          "type": "HEALTH",
+                          "serviceLevel": "SPEAK_SLOWLY_FOR_CLIENT",
+                        },
+                      ],
+                    "declarations":
+                      [
+                        {
+                          "adviserId": "E273053",
+                          "templateId": "VULNERABLE",
+                          "acknowledgement": true,
+                        },
+                      ],
+                  }
         required: true
       responses:
-        '201':
+        "201":
           description: Investor vulnerabilities created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
-        '400':
+                $ref: "#/components/schemas/VulnerabilityHeader"
+              examples:
+                Ex1:
+                  summary: Characteristics of a vulnerable investor
+                  value:
+                    {
+                      "investor": { "id": "HWI00016530" },
+                      "tenantId": "HUBWISE",
+                      "vulnerabilities":
+                        [
+                          {
+                            "type": "HEALTH",
+                            "serviceLevel": "SPEAK_LOUDLY_AND_CLEARLY",
+                            "startDate": "2025-10-01",
+                            "expiryDate": "2025-10-22",
+                            "adviserId": "E273053",
+                          },
+                          {
+                            "type": "HEALTH",
+                            "serviceLevel": "SPEAK_SLOWLY_FOR_CLIENT",
+                            "startDate": "2025-10-22",
+                            "adviserId": "E273053",
+                          },
+                        ],
+                      "declarations":
+                        [
+                          {
+                            "adviserId": "E273053",
+                            "templateId": "CONFIRM_VULNERABILITY_CONSENT",
+                            "acknowledgement": true,
+                          },
+                        ],
+                    }
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /investors/{investorId}/correspondences:
     post:
@@ -372,33 +590,14 @@ paths:
         - Investor
       summary: Create investor correspondences
       description: >
-        - Allows the creation of 1 or more correspondences for a specific
-        investor using their unique SS&C Hubwise Investor ID which is generated
-        when
+        Allows the creation of 1 or more correspondences  for a specific investor using their unique SS&C Hubwise Investor ID which is generated when an investor is created. This is only applicable to an investor type of Individual or Court Appointed Deputy.  The endpoint must be called for each investor record.
 
-        - an investor is created. This is only applicable to an investor type of
-        Individual or Court Appointed Deputy.
+        The correspondences endpoint should be used when creating new correspondence records against an existing investor record.  Correspondences must be provided for each record. If a start date is not provided it will be defaulted to the current date.
 
-        - The correspondences endpoint should be used when creating new
-        correspondence records against an existing investor record.
+        The Get Declaration Templates API can be used to identify any required declarations that must be included in the request message.
 
-        - Correspondences must be provided for each record. If a start date is
-        not provided it will be defaulted to the current date.
-
-        - If declaration templates are required from the declaration API they
-        must be included in the request message. The endpoint must be called for
-
-        - each investor record.
-
-        - If the investor does not exist or the requester lacks permission, an
-        appropriate error response will be returned. Only investors that the
-
-        - requester is authorised to access can be used. If correspondences
-        already exists against the investor, the update endpoint needs to be
-        used
-
-        - and an appropriate error response will be returned.
-      operationId: createVulnerabilities_1
+        If the investor does not exist or the requester lacks permission, an appropriate error response will be returned. Only investors that the requester is authorised to access can be used. If correspondences already exists against the investor, the update endpoint needs to be used and an appropriate error response will be returned.
+      operationId: createCorrespondences
       parameters:
         - name: testMode
           in: query
@@ -417,36 +616,91 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CorrespondenceChangeHeaderModel'
+              $ref: "#/components/schemas/CorrespondenceHeader"
+            examples:
+              Ex1:
+                summary: Investor correspondences
+                value:
+                  {
+                    "correspondences":
+                      [
+                        {
+                          "type": "AUDIO",
+                          "startDate": "2025-10-01",
+                          "expiryDate": "2025-10-22",
+                        },
+                        { "type": "BRAILLE", "startDate": "2025-10-01" },
+                      ],
+                    "declarations":
+                      [
+                        {
+                          "adviserId": "E273053",
+                          "id": "00000084480",
+                          "templateId": "CORRESPONDENCE",
+                          "acknowledgement": true,
+                        },
+                      ],
+                  }
         required: true
       responses:
-        '201':
-          description: Investor vulnerability correspondences created successfully.
+        "201":
+          description: Investor correspondences created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VulnerabilityChangeHeaderModel'
-        '400':
+                $ref: "#/components/schemas/VulnerabilityHeader"
+              examples:
+                Ex1:
+                  summary: Investor correspondences
+                  value:
+                    {
+                      "investor": { "id": "HWI00016530" },
+                      "tenantId": "HUBWISE",
+                      "correspondences":
+                        [
+                          {
+                            "type": "AUDIO",
+                            "startDate": "2025-10-01",
+                            "expiryDate": "2025-10-22",
+                            "adviserId": "E273053",
+                          },
+                          {
+                            "type": "BRAILLE",
+                            "startDate": "2025-10-01",
+                            "adviserId": "E273053",
+                          },
+                        ],
+                      "declarations":
+                        [
+                          {
+                            "adviserId": "E273053",
+                            "id": "00000084480",
+                            "templateId": "CONFIRM_CORRESPONDENCES_CONSENT",
+                            "acknowledgement": true,
+                          },
+                        ],
+                    }
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts:
     get:
@@ -454,27 +708,27 @@ paths:
         - Account
       summary: Query accounts
       description: |
-          This endpoint retrieves the full details of an account that the requester is authorised to access
-          - Supported Filters:
-            - `name` - Partial match on the account name (minimum 2 characters).
-            - `accountId`- Partial match on the account ID (minimum 2 characters).
-            - `investorId`- Exact match only.
-            - `status`- Exact match on account status (e.g. NEW, PENDING). Refer to the Model section for the full list of supported values.
-            - `sortColumn`- Allows sorting by any field (e.g. createdOnDate, name). See the Model section for the full list of sortable fields.
-          - Additional Features:
-            - `Pagination` - Limit and offset controls for navigating large result sets.
-            - `Sorting` - Sort results by any supported field.
+        This endpoint retrieves the full details of an account that the requester is authorised to access
+        - Supported Filters:
+          - `name` - Partial match on the account name (minimum 2 characters).
+          - `accountId`- Partial match on the account ID (minimum 2 characters).
+          - `investorId`- Exact match only.
+          - `status`- Exact match on account status (e.g. NEW, PENDING). Refer to the Model section for the full list of supported values.
+          - `sortColumn`- Allows sorting by any field (e.g. createdOnDate, name). See the Model section for the full list of sortable fields.
+        - Additional Features:
+          - `Pagination` - Limit and offset controls for navigating large result sets.
+          - `Sorting` - Sort results by any supported field.
       operationId: searchAccounts
       parameters:
         - name: name
           in: query
-          description: 'Filter accounts by name, this is a predictive search'
+          description: "Filter accounts by name, this is a predictive search"
           required: false
           schema:
             maxLength: 50
             minLength: 2
             type: string
-            description: 'Filter accounts by name, this is a predictive search'
+            description: "Filter accounts by name, this is a predictive search"
             example: HUB
           example: HUB
         - name: accountId
@@ -560,7 +814,7 @@ paths:
             minimum: 0
             type: string
             description: Zero-based index of the page to retrieve (0 = first page).
-            default: '0'
+            default: "0"
         - name: pageSize
           in: query
           description: Number of records per page. Maximum allowed is 100
@@ -570,39 +824,36 @@ paths:
             minimum: 1
             type: string
             description: Number of records per page. Maximum allowed is 100
-            default: '10'
+            default: "10"
       responses:
-        '200':
+        "200":
           description: Accounts retrieved successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageAccountModel'
-        '400':
+                $ref: "#/components/schemas/AccountsQueryResponse"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
-
+                  $ref: "#/components/examples/400-BadRequest-Query"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
     post:
       tags:
         - Account
-      summary: Create account
-      description: |
-          - This endpoint allows the creation of a new account against investor(s) that the requester has access to.
-          - If `testMode=true`, simulates account creation but rolls back changes after validation.
       operationId: createAccount
+      summary: Create a pending Account
+      description: "Allows the creation of a single investment account. It supports the creation of Individual, Corporate, Trust and Joint accounts. The required data varies depending on the product type and includes the accounts core profile information, linking of related investor(s), a product and an investment model .\r\n\r\nThis endpoint  should be used when creating new account records. The related investors must be created prior to the account being created. The details of the product and model to be assigned to the account must be included in the request message. Once an account has been created the product, type and currencies against the account cannot be updated.  The number and type of related investors against an account can vary per product type. If declaration templates are required from the declaration API they must be included in the request message.The account id returned in the response payload will be required for account maintenance. The endpoint must be called for each account record.\r\n\r\nThe account will be created in a pending status. To activate the account the account activation must be called once any other endpoints that are required for the account are called (Bank Accounts, Money Movement, Transfers, Fees, Relationships).\r\n\r\nThe account name is used for the recipients name in documentation and for display purposes in the adviser portal. It should be set to the organisation name, related investors name or a concatenation of all of the related investors names. We recommend the account name is set to:\r\n\r\n1. organisation name for a corporate or trust\r\n\r\n2. title + firstName + middleName + surname for an individual owner and concatenation with an ampersand for joint accounts . If this exceeds 50 characters drop middleName and title or any other appropriate fields if required."
       parameters:
         - name: testMode
           in: query
@@ -614,76 +865,78 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AccountModel'
+              $ref: "#/components/schemas/Account"
+            examples:
+              Ex1:
+                summary: SIPP account
+                value:
+                  {
+                    "productId": "HIS",
+                    "type": "ADVISED",
+                    "adviserId": "E273053",
+                    "baseCurrency": "GBP",
+                    "marketSettlementCurrency": "GBP",
+                    "name": "Mr Hubwise Person",
+                    "external":
+                      [
+                        {
+                          "reference": "d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c",
+                          "provider": "CRM Name",
+                        },
+                      ],
+                    "investors":
+                      [
+                        {
+                          "investorId": "HWI00007126",
+                          "relationship": "OWNER",
+                        },
+                      ],
+                    "pensionDetails":
+                      {
+                        "employmentStatus": "OTHER",
+                        "employmentStatusOther": "Contractor",
+                        "taxReliefEntitlement": "UK_RESIDENT",
+                        "retirementAge": 75,
+                        "mpaaTriggeredDate": "2025-04-28",
+                      },
+                    "model":
+                      {
+                        "id": "HW000000090",
+                        "tenantId": "HUBWISE",
+                        "date": "2020-04-28",
+                        "customerId": "CUST023",
+                      },
+                    "declarations":
+                      {
+                        "templateId": "ACCOUNT_ISA",
+                        "adviserId": "E273053",
+                        "acknowledgement": true,
+                        "acknowledgementReason": "string",
+                      },
+                  }
         required: true
       responses:
-        '201':
+        "201":
           description: Account created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountModel'
-        '400':
+                $ref: "#/components/schemas/Account"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
-
-  /accounts/{accountId}:
-    get:
-      tags:
-        - Account
-      summary: Get account by id
-      description: |
-          - This endpoint retrieves the full details of an account using the unique `accountId`.
-          - The requester can only retrieve an account they are authorised to access.
-      operationId: getAccountById
-      parameters:
-        - name: accountId
-          in: path
-          description: Account ID
-          required: true
-          schema:
-            type: string
-          example: HW00013451A
-      responses:
-        '200':
-          description: Account retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountModel'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
-                QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
-                RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/bank-accounts:
     post:
@@ -691,8 +944,8 @@ paths:
         - Account
       summary: Create bank account
       description: |
-          - Adds a bank account for the given `accountId`.
-          - Either a `sort code` and `account number`, or an `IBAN`, is required
+        - Adds a bank account for the given `accountId`.
+        - Either a `sort code` and `account number`, or an `IBAN`, is required
       operationId: createBankAccount
       parameters:
         - name: accountId
@@ -714,36 +967,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BankAccount'
+              $ref: "#/components/schemas/BankAccount"
             examples:
               Ex1:
-                summary: Add a customer's bank account to their investment account 
+                summary: Add a customer's bank account to their investment account
                 value:
                   {
                     "name": "Jane Doe",
                     "number": "87654321",
                     "sortCode": "309894",
-                    "holders": [
-                      {
-                        "id": "HW00013200A"
-                      }
-                    ]
+                    "holders": [{ "id": "HW00013200A" }],
                   }
               Ex2:
                 summary: Add a multi-holder bank account to a customer's investment account
-                value: 
+                value:
                   {
                     "name": "Jane Doe",
                     "number": "87654321",
                     "sortCode": "309894",
-                    "holders": [
-                      {
-                        "id": "HW00013200A"
-                      },
-                      {
-                        "id": "HW00013300A"
-                      }
-                    ]
+                    "holders":
+                      [{ "id": "HW00013200A" }, { "id": "HW00013300A" }],
                   }
               Ex3:
                 summary: Add a third party's bank account to a customer's investment account
@@ -752,12 +995,7 @@ paths:
                     "name": "Jane Doe Enterprises LTD",
                     "number": "87654321",
                     "sortCode": "309894",
-                    "holders": [
-                      {
-                        "id": "1",
-                        "thirdParty": true
-                      }
-                    ]
+                    "holders": [{ "id": "1", "thirdParty": true }],
                   }
               Ex4:
                 summary: Add a customer's EUR bank account to their investment account
@@ -767,11 +1005,7 @@ paths:
                     "name": "Erika Mustermann",
                     "iban": "DE75512108001245126199",
                     "bicSwift": "DEUTDEFF",
-                    "holders": [
-                      {
-                        "id": "HW00013200A"
-                      }
-                    ]
+                    "holders": [{ "id": "HW00013200A" }],
                   }
               Ex5:
                 summary: Add a customer's USD bank account to their investment account
@@ -781,40 +1015,36 @@ paths:
                     "name": "Jane Doe",
                     "number": "123456789012",
                     "bicSwift": "BOFAUS6S",
-                    "holders": [
-                      {
-                        "id": "HW00013200A"
-                      }
-                    ]
+                    "holders": [{ "id": "HW00013200A" }],
                   }
       responses:
-        '201':
+        "201":
           description: Bank account created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BankAccount'
-        '400':
+                $ref: "#/components/schemas/BankAccount"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/money-movements:
     post:
@@ -822,8 +1052,8 @@ paths:
         - Account
       summary: Create Money Movement
       description: |
-          - This endpoint allows the creation of a new money movement(s) against an account.
-          - If `testMode=true`, simulates account creation but rolls back changes after validation.
+        - This endpoint allows the creation of a new money movement(s) against an account.
+        - If `testMode=true`, simulates account creation but rolls back changes after validation.
       operationId: createMovements
       parameters:
         - name: accountId
@@ -845,38 +1075,117 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Movement'
+                $ref: "#/components/schemas/Movement"
+            examples:
+              Ex1:
+                summary: An example TBC
+                value:
+                  [
+                    {
+                      "type": "CONTRIBUTIONS",
+                      "paymentMethod": "ELECTRONIC",
+                      "payer": "SELF",
+                      "frequency": "ONE-OFF",
+                      "value":
+                        {
+                          "amount": 15000,
+                          "currency": "GBP",
+                          "crystallised": 0,
+                        },
+                      "bank":
+                        {
+                          "number": "50220369",
+                          "sortCode": "700125"
+                        },
+                      "isGross": true,
+                      "startDate": "2026-03-04",
+                      "reference": "OG-FCZO6FOU67KKWWKO-4686832911352560996508161276279749062156080292545271226625494528904079031314065670776878",
+                      "fee":
+                        {
+                          "amount": 0,
+                          "percentage": 0.25,
+                          "instalmentPlan":
+                            { "frequency": "MONTHLY", "total": 12 },
+                        },
+                      "endDate": "2026-03-04",
+                      "isMaximum": true,
+                      "cashOnlyInstruction": false,
+                      "hrmcProtection":
+                        {
+                          "hmrcProtection": true,
+                          "hmrcProtectionType": "Primary Protection",
+                          "commencementEvidence": "NONE",
+                          "hmrcCertificateNumber": "FP123451231233A",
+                        },
+                      "sourceOfFund":
+                        {
+                          "type": "SAVINGS",
+                          "fields":
+                            {
+                              "annualSalary": 100000,
+                              "jobDescription": "Contractor",
+                              "natureOfBusiness": "Financial Services",
+                              "amountReceived ": 5000,
+                              "frequency ": "MONTHLY",
+                              "donorName": "John Doe",
+                              "dateReceived ": "2024-01-15",
+                              "benefactorName": "Jane Smith",
+                              "relationshipToBenefactor": "Parent",
+                              "claimValue": 20000,
+                              "providerName": "Insurance Company",
+                              "natureOfClaim": "Life Insurance Claim",
+                              "loanValue": 15000,
+                              "lenderName": "Bank of Example",
+                              "winValue": 5000,
+                              "sourceOfWinnings": "Lottery",
+                              "maturityOrSurrenderValue": 10000,
+                              "awardValue": 25000,
+                              "natureOfAward": "Personal Injury Settlement",
+                              "dateOfSale": "2026-03-04",
+                              "investmentType": "string",
+                              "investmentHoldingPeriod": "string",
+                              "saleAmount": 0,
+                              "natureOfPropertyOrBusiness": "string",
+                              "sourceOfSavings": "string",
+                              "description": "Savings",
+                            },
+                        },
+                      "thirdPartyId": "string",
+                      "dependantAccountId": "string",
+                      "returnUri": "string",
+                    },
+                  ]
         required: true
       responses:
-        '200':
+        "200":
           description: Money Movement(s) created successfully or redirect
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Movement'
-        '400':
+                  $ref: "#/components/schemas/Movement"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/transfers:
     post:
@@ -915,38 +1224,38 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/AccountTransferModel'
+                $ref: "#/components/schemas/AccountTransfer"
         required: true
       responses:
-        '200':
+        "200":
           description: Transfers created successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AccountTransferModel'
-        '400':
+                  $ref: "#/components/schemas/AccountTransfer"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/relationships:
     post:
@@ -969,35 +1278,35 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RelationshipModel'
+              $ref: "#/components/schemas/Relationship"
       responses:
-        '200':
+        "200":
           description: Relationship created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RelationshipModel'
-        '400':
+                $ref: "#/components/schemas/Relationship"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/income-options:
     post:
@@ -1019,35 +1328,35 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RelationshipModel'
+              $ref: "#/components/schemas/Relationship"
       responses:
-        '200':
+        "200":
           description: Relationship created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RelationshipModel'
-        '400':
+                $ref: "#/components/schemas/Relationship"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/fees:
     post:
@@ -1055,10 +1364,10 @@ paths:
         - Account
       summary: Create account fees
       description: |
-         - This endpoint allows the creation of fee(s) against a single account an account using the unique `accountId`.
-         - The requester can only create the fees against an account they are authorised to access.
-         - Creates one or more Fee records for a specific account.
-         - If `testMode=true`, simulates account fee creation but rolls back changes after validation.
+        - This endpoint allows the creation of fee(s) against a single account an account using the unique `accountId`.
+        - The requester can only create the fees against an account they are authorised to access.
+        - Creates one or more Fee records for a specific account.
+        - If `testMode=true`, simulates account fee creation but rolls back changes after validation.
       operationId: createAccountFee
       parameters:
         - name: accountId
@@ -1082,38 +1391,38 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Fee'
+                $ref: "#/components/schemas/Fee"
         required: true
       responses:
-        '201':
+        "201":
           description: Account fee(s) created successfully.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Fee'
-        '400':
+                  $ref: "#/components/schemas/Fee"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
   /accounts/{accountId}/activate:
     post:
@@ -1121,12 +1430,12 @@ paths:
         - Account
       summary: Activate account
       description: |
-          
-          - This endpoint allows you to activate an existing investor account with a `status=PENDING` using the `accountID` as a unique identifier.
-          
-          - The requester can only update an account they are authorised to access.
-          
-          - If `testMode=true`, simulates account activation but rolls back changes after validation..
+
+        - This endpoint allows you to activate an existing investor account with a `status=PENDING` using the `accountID` as a unique identifier.
+
+        - The requester can only update an account they are authorised to access.
+
+        - If `testMode=true`, simulates account activation but rolls back changes after validation..
       operationId: activateAccount
       parameters:
         - name: testMode
@@ -1143,34 +1452,34 @@ paths:
             type: string
           example: HW00013451A
       responses:
-        '200':
+        "200":
           description: Account activated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountModel'
-        '400':
+                $ref: "#/components/schemas/Account"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 PathParam:
-                  $ref: '#/components/examples/400-BadRequest-Path'
+                  $ref: "#/components/examples/400-BadRequest-Path"
                 QueryParam:
-                  $ref: '#/components/examples/400-BadRequest-Query'
+                  $ref: "#/components/examples/400-BadRequest-Query"
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '404':
-          $ref: '#/components/responses/404-NotFound'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
-  
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "404":
+          $ref: "#/components/responses/404-NotFound"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
+
   /declarations:
     get:
       tags:
@@ -1262,7 +1571,7 @@ paths:
             minimum: 0
             type: string
             description: Zero-based index of the page to retrieve (0 = first page).
-            default: '0'
+            default: "0"
         - name: pageSize
           in: query
           description: Number of records per page. Maximum allowed is 100
@@ -1272,34 +1581,32 @@ paths:
             minimum: 1
             type: string
             description: Number of records per page. Maximum allowed is 100
-            default: '10'
+            default: "10"
       responses:
-        '200':
+        "200":
           description: Declaration templates successfully retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeclarationTemplateResponse'
-        '400':
+                $ref: "#/components/schemas/DeclarationTemplateResponse"
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 RequestBody:
-                  $ref: '#/components/examples/400-BadRequest-Requestbody'
-        '401':
-          $ref: '#/components/responses/401-Unorthorized'
-        '403':
-          $ref: '#/components/responses/403-Forbidden'
-        '500':
-          $ref: '#/components/responses/500-ServerError'
+                  $ref: "#/components/examples/400-BadRequest-Requestbody"
+        "401":
+          $ref: "#/components/responses/401-Unorthorized"
+        "403":
+          $ref: "#/components/responses/403-Forbidden"
+        "500":
+          $ref: "#/components/responses/500-ServerError"
 
 components:
-  
   schemas:
-    
     Error:
       type: object
       description: A standard error response.
@@ -1316,12 +1623,12 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/RequestValidationIssue'
+            $ref: "#/components/schemas/ErrorDetail"
 
-    RequestValidationIssue:
+    ErrorDetail:
       type: object
       description: |
-          A collection of validation issues with the request.
+        A collection of validation issues with the request.
       required:
         - message
       properties:
@@ -1337,164 +1644,149 @@ components:
             If a request body is passed, the JSON Path expression pointing to the value in the request body which caused the validation failure.
 
 
-            The RFC standard for JSON Path: https://www.rfc-editor.org/rfc/rfc9535.html 
+            The RFC standard for JSON Path: https://www.rfc-editor.org/rfc/rfc9535.html
         message:
           type: string
           description: Detailed error message about the request validation failure.
-      
 
-    AccountModel:
+    Account:
       required:
-        - currency
-        - entityType
         - productId
-        - relatedInvestors
         - type
+        - baseCurrency
+        - marketSettlementCurrency
+        - name
+        - investors
+        - model
       type: object
       properties:
-        accountId:
-          maxLength: 11
-          type: string
-          description: Id
+        id:
           format: string
+          description: Unique SS&C Hubwise Account identifier
+          maxLength: 11
+          minLength: 11
+          type: string
           readOnly: true
           example: HW00013451A
-        customerId:
-          maxLength: 7
+        status:
+          description: Current state of the account
+          enum:
+            - ACTIVE
+            - REFERRED
+            - DELETED
+            - AWAITING_AUTHORISATION
+            - SUSPENDED
+            - PENDING
+            - AWAITING_AML_CHECK
+            - DECEASED
+            - TRADING_SUSPENDED
+            - UNDER_PROBATE
+            - INTENTION_TO_CLOSE
+            - TRANSFER_OUT_STOCK
+            - RECENTLY_OPENED
+            - FROZEN
+            - CLOSED
+            - ARCHIVED
+            - TRANSFER_OUT_CASH
+            - NON_UK_RESIDENT
+            - AML
+            - CLOSED_SUB_ACCOUNT
           type: string
-          description: Customer Id
+          readOnly: true
+          example: ACTIVE
+        activationDate:
+          format: date
+          description: The date the account was activated
+          type: string
+          readOnly: true
+          example: "2025-04-28"
+        tenantId:
           format: string
+          description: SS&C Hubwise tenant ID
+          maxLength: 7
+          minLength: 7
+          type: string
           readOnly: true
           example: HUBWISE
         productId:
-          maxLength: 3
-          minLength: 0
-          type: string
-          description: Product Id
           format: string
-          example: GIA
-        entityType:
+          description: The product associated to the account
+          maxLength: 3
+          minLength: 3
           type: string
-          description: Entity Type
-          example: INDIVIDUAL
-          enum:
-            - INDIVIDUAL
-            - CORPORATE
-            - JOINT
-            - TRUST
-            - CLUB
+          example: HIS
         type:
-          type: string
-          description: Type
-          example: ADVISED
+          description: Identifies the level of service provided on an account
           enum:
             - ADVISED
             - DISCRETIONARY
-            - EXECUTIONONLY
-        currency:
-          maxLength: 3
-          minLength: 0
+            - EXECUTION_ONLY
           type: string
-          description: Currency
+          example: ADVISED
+        adviserId:
           format: string
+          description: ID of the adviser assigned to the account
+          maxLength: 7
+          minLength: 7
+          type: string
+          example: E273053
+        baseCurrency:
+          format: string
+          description: The currency used  to record the accounts holdings historical cost
+          maxLength: 3
+          minLength: 3
+          type: string
           example: GBP
         marketSettlementCurrency:
+          format: string
+          description: >-
+            The currency in which funds are  paid/received by the buyer and seller when the
+            transaction is completed (settled).
           maxLength: 3
-          minLength: 0
+          minLength: 3
           type: string
-          description: Market Settlement Currency
-          format: string
           example: GBP
-        category:
-          type: string
-          description: Category
-          example: INDIVIDUAL
-          enum:
-            - INDIVIDUAL
-            - PRIMARY
-            - SECONDARY
         name:
+          format: string
+          description: "Name of the account, usually set to the investor(s) name(s)"
           maxLength: 50
-          minLength: 0
+          minLength: 1
           type: string
-          description: Name
-          format: string
-          example: Mr Hub Wise Person
-        model:
-          $ref: '#/components/schemas/ModelHeader'
-        feeAccountId:
-          maxLength: 11
-          minLength: 0
-          type: string
-          description: Fee Account Id
-          format: string
-          example: HW00000124A
-        externalReference:
-          maxLength: 20
-          minLength: 0
-          type: string
-          description: External Reference
-          format: string
-          example: EL1027305
-        adviserId:
-          maxLength: 7
-          minLength: 0
-          type: string
-          description: adviserId
-          format: string
-          example: E273053
-        inceptionDate:
-          type: string
-          description: Inception Date
-          format: date
-          readOnly: true
-          example: '2025-04-28'
-        status:
-          type: string
-          description: status
-          readOnly: true
-          example: NEW
-          enum:
-            - NEW
-            - DELETED
-            - INCEPTED
-            - MIGRATING
-            - SUSPENDED
-            - FROZEN
-            - SUBMITTED_FOR_AUTHORIZATION
-            - DECEASED
-            - TRANSFERRING_OUT
-            - TRANSFERRING_IN
-            - TRADING_SUSPENDED
-            - MOVEMENTS_REJECTED
-            - PENSION_SHARING_ORDER
-            - PROBATE
-            - OVERSEAS
-            - AWAITING_FINAL_CTC
-            - PENDING
-            - PRE_AML
-            - REFERRED
-            - FAILED
-            - WAITING_FOR_DOCUMENTATION
-            - INTENTION_TO_CLOSE
-            - CLOSED
-            - ARCHIVED
-            - FEE_SENT
-            - FEE_RECEIVED
-            - SUB_ACC_TRANSFER
-            - TRANSFER_OUT_CASH
-            - NON_UK_RESIDENT
-        pensionDetails:
-          $ref: '#/components/schemas/AccountPensionModel'
-        relatedInvestors:
+          example: Mr Hubwise Person
+        external:
           type: array
           items:
-            $ref: '#/components/schemas/EntityLinkModel'
-        auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Account Model
-    
-    AccountPensionModel:
+            $ref: "#/components/schemas/ExternalReference"
+        investors:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityLink"
+        pensionDetails:
+          $ref: "#/components/schemas/AccountPension"
+        model:
+          $ref: "#/components/schemas/ModelHeader"
+        declarations:
+          $ref: "#/components/schemas/Declaration"
+
+    ExternalReference:
+      type: object
+      properties:
+        reference:
+          format: string
+          description: third party reference
+          maxLength: 36
+          minLength: 1
+          type: string
+          example: d8d3a6b1-f1e5-4b0a-8d2c-0a3f5b7e9d1c
+        provider:
+          format: string
+          description: provider of the reference
+          maxLength: 36
+          minLength: 1
+          type: string
+          example: CRM Name
+
+    AccountPension:
       type: object
       properties:
         accountId:
@@ -1551,7 +1843,7 @@ components:
         taxRelief:
           maxLength: 1
           minLength: 0
-          pattern: '[ABCDN]'
+          pattern: "[ABCDN]"
           type: string
           description: taxRelief
           format: string
@@ -1561,7 +1853,7 @@ components:
             - B
             - C
             - D
-            - 'N'
+            - "N"
         sourceOfWealth:
           maxLength: 50
           minLength: 0
@@ -1597,25 +1889,24 @@ components:
           type: string
           description: Flexi-access Date
           format: date
-          example: '2025-04-28'
+          example: "2025-04-28"
         retirementDate:
           type: string
           description: Retirement Date
           format: date
           readOnly: true
-          example: '2050-06-04'
+          example: "2050-06-04"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Pension-related details
-    
-    PageAccountModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    AccountsQueryResponse:
       type: object
       properties:
         content:
           type: array
           description: List of content items
           items:
-            $ref: '#/components/schemas/AccountModel'
+            $ref: "#/components/schemas/Account"
         page:
           type: integer
           description: Current page number (0-based)
@@ -1628,8 +1919,7 @@ components:
           type: integer
           description: Total number of elements
           format: int64
-      description: Paginated Response
-    
+
     AddressLines:
       required:
         - line1
@@ -1647,7 +1937,7 @@ components:
           minLength: 0
           type: string
           description: Address line 2
-          example: '4 Exchange Quay, Salford Quay'
+          example: "4 Exchange Quay, Salford Quay"
         line3:
           maxLength: 75
           minLength: 0
@@ -1665,15 +1955,15 @@ components:
           minLength: 0
           type: string
           description: Address line 5
-          example: ''
+          example: ""
         postCode:
           maxLength: 12
           minLength: 0
           type: string
           description: Postcode
           example: M5 3EE
-    
-    AddressModel:
+
+    Address:
       required:
         - countryCode
         - line1
@@ -1698,7 +1988,7 @@ components:
           minLength: 0
           type: string
           description: Premises Identifier
-          example: '12'
+          example: "12"
         line1:
           maxLength: 75
           minLength: 0
@@ -1736,8 +2026,8 @@ components:
           description: Country code
           example: GB
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-    
+          $ref: "#/components/schemas/AuditInfo"
+
     BankAccountHolder:
       required:
         - id
@@ -1748,59 +2038,25 @@ components:
           maxLength: 11
           minLength: 0
           type: string
-          description: The identifier of the investor holding the account. For third party account holders use the third party sequence number. 
+          description: The identifier of the investor holding the account. For third party account holders use the third party sequence number.
         thirdParty:
           type: boolean
           default: false
           description: Indicates if the bank account holder is a third party to the investment - for example, an employer. Defaults to false.
-    
-    BankAccount:
+
+    BankAccountDetails:
       oneOf:
         - required:
-            - name
-            - holders
             - number
             - sortCode
         - required:
-            - name
-            - holders
             - iban
             - bicSwift
         - required:
-            - name
-            - holders
             - number
             - bicSwift
       type: object
-      readOnly: true
       properties:
-        name:
-          maxLength: 70
-          minLength: 5
-          type: string
-          description: The name of the account holder.
-        currency:
-          type: string
-          default: GBP
-          minLength: 3
-          maxLength: 3
-          description: The ISO 4217 currency code of the bank account. Defaults to GBP. 
-        accountId:
-          maxLength: 11
-          type: string
-          description: The identifier of the investment account.
-          readOnly: true
-        status:
-          type: string
-          description: Status of the bank account
-          readOnly: true
-          enum:
-            - ACTIVE
-            - NEW
-            - REFERRED
-            - REJECTED
-            - SUBMITTED
-            - UNCHECKED
         number:
           pattern: ^\d{5,15}$
           type: string
@@ -1812,19 +2068,55 @@ components:
         iban:
           pattern: ^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$
           type: string
-          description: IBAN (ISO 13616), without spaces. Required for EUR bank accounts. 
+          description: IBAN (ISO 13616), without spaces. Required for EUR bank accounts.
         bicSwift:
           pattern: ^[A-Za-z]{6}[2-9A-Za-z][0-9A-Na-nP-Zp-z]([A-Za-z0-9]{3}|x{3})?$
           type: string
-          description: BIC or Swift code (ISO 9362), either 8 or 11 characters. Required for EUR and USD bank accounts. 
-        holders:
-          maxItems: 20
-          minItems: 1
-          type: array
-          description: The one or more holders of the bank account. 
-          items:
-            $ref: '#/components/schemas/BankAccountHolder'
-    
+          description: BIC or Swift code (ISO 9362), either 8 or 11 characters. Required for EUR and USD bank accounts.
+
+    BankAccount:
+      allOf:
+        - $ref: "#/components/schemas/BankAccountDetails"
+        - type: object
+          required:
+            - holders
+            - name
+          properties:
+            name:
+              maxLength: 70
+              minLength: 5
+              type: string
+              description: The name of the account holder.
+            currency:
+              type: string
+              default: GBP
+              minLength: 3
+              maxLength: 3
+              description: The ISO 4217 currency code of the bank account. Defaults to GBP.
+            accountId:
+              maxLength: 11
+              type: string
+              description: The identifier of the investment account.
+              readOnly: true
+            status:
+              type: string
+              description: Status of the bank account
+              readOnly: true
+              enum:
+                - ACTIVE
+                - NEW
+                - REFERRED
+                - REJECTED
+                - SUBMITTED
+                - UNCHECKED
+            holders:
+              maxItems: 20
+              minItems: 1
+              type: array
+              description: The one or more holders of the bank account.
+              items:
+                $ref: "#/components/schemas/BankAccountHolder"
+
     AuditInfo:
       type: object
       properties:
@@ -1839,7 +2131,7 @@ components:
           description: Date of creation
           format: date-time
           readOnly: true
-          example: '2026-02-16T19:31:19Z'
+          example: "2026-02-16T19:31:19Z"
         changedByUser:
           type: string
           description: User who last modified the record
@@ -1850,10 +2142,10 @@ components:
           description: Date of last modification
           format: date-time
           readOnly: true
-          example: '2026-02-16T19:31:19Z'
+          example: "2026-02-16T19:31:19Z"
       description: Audit information for tracking creation and modification
       readOnly: true
-    
+
     InvestorName:
       type: object
       properties:
@@ -1886,13 +2178,13 @@ components:
           example: Surname
       description: Investor Name
       readOnly: true
-    
+
     Rate:
       type: object
       properties:
         rateType:
           type: string
-          description: 'The type of rate to apply: F = Flat, P = Percentage.'
+          description: "The type of rate to apply: F = Flat, P = Percentage."
           readOnly: true
           example: FLAT
           enum:
@@ -1918,7 +2210,7 @@ components:
           readOnly: true
           example: 200
       description: Defines a single rate band within a tiered fee structure.
-    
+
     Value:
       required:
         - amount
@@ -1937,8 +2229,8 @@ components:
           description: Currency code
           example: GBP
       description: Value object representing amount and currency.
-    
-    CedingProviderModel:
+
+    CedingProvider:
       type: object
       properties:
         id:
@@ -1958,12 +2250,11 @@ components:
             electronically
           example: true
         address:
-          $ref: '#/components/schemas/AddressLines'
+          $ref: "#/components/schemas/AddressLines"
         ContactDetailsModel:
-          $ref: '#/components/schemas/ContactDetailsModel'
-      description: Ceding Provider model
-    
-    DeclarationModel:
+          $ref: "#/components/schemas/ContactDetails"
+
+    Declaration:
       type: object
       properties:
         templateId:
@@ -1985,7 +2276,7 @@ components:
           type: string
           description: Unique Reference Number
           readOnly: true
-          example: '00000004846'
+          example: "00000004846"
         accountId:
           maxLength: 11
           type: string
@@ -1994,7 +2285,7 @@ components:
         investorAdded:
           type: string
           description: The investor that added this declaration
-          example: 'false'
+          example: "false"
         jsonName:
           maxLength: 150
           type: string
@@ -2014,7 +2305,7 @@ components:
         employeeAdded:
           type: string
           description: The employee that added this declaration
-          example: 'true'
+          example: "true"
         acknowledgement:
           type: boolean
           description: >-
@@ -2033,9 +2324,9 @@ components:
           type: string
           format: date
         AuditInfo:
-          $ref: '#/components/schemas/AuditInfo'
+          $ref: "#/components/schemas/AuditInfo"
       description: Declaration Object
-    
+
     DeclarationTemplate:
       type: object
       properties:
@@ -2060,7 +2351,7 @@ components:
             I consent to SCM Direct / MoneyShe using my personal data as seen in
             the firm privacy policy.
       description: Represents a declaration template with content and consent label.
-    
+
     DeclarationTemplateResponse:
       type: object
       properties:
@@ -2079,12 +2370,12 @@ components:
           type: array
           description: List of declaration templates associated with the event and portal
           items:
-            $ref: '#/components/schemas/DeclarationTemplate'
+            $ref: "#/components/schemas/DeclarationTemplate"
       description: >-
         Represents a collection of declaration templates for a specific event
         and portal.
-    
-    EntityLinkModel:
+
+    EntityLink:
       required:
         - investorId
         - relationship
@@ -2145,7 +2436,7 @@ components:
           readOnly: true
           example: E000788
         investor:
-          $ref: '#/components/schemas/InvestorName'
+          $ref: "#/components/schemas/InvestorName"
         type:
           maxLength: 11
           type: string
@@ -2158,7 +2449,7 @@ components:
           description: Account creation date (YYYY-MM-DD)
           format: date
           readOnly: true
-          example: '2025-04-28'
+          example: "2025-04-28"
         customerId:
           maxLength: 7
           type: string
@@ -2208,8 +2499,7 @@ components:
             - SUB_ACC_TRANSFER
             - TRANSFER_OUT_CASH
             - NON_UK_RESIDENT
-      description: Related person details
-    
+
     Fee:
       required:
         - frequency
@@ -2234,7 +2524,7 @@ components:
           minimum: 0
           exclusiveMinimum: false
           type: number
-          description: 'Fee as a percentage (e.g., 0.75 = 0.75%).'
+          description: "Fee as a percentage (e.g., 0.75 = 0.75%)."
           example: 0.75
         type:
           type: string
@@ -2263,14 +2553,14 @@ components:
             - ONE-OFF
         startDate:
           type: string
-          description: 'Date the fee starts (format: yyyy-MM-dd).'
+          description: "Date the fee starts (format: yyyy-MM-dd)."
           format: date
-          example: '2025-04-28'
+          example: "2025-04-28"
         endDate:
           type: string
-          description: 'Date the fee ends (format: yyyy-MM-dd).'
+          description: "Date the fee ends (format: yyyy-MM-dd)."
           format: date
-          example: '2025-05-28'
+          example: "2025-05-28"
         vatIncluded:
           type: boolean
           description: Whether VAT is included in the fee amount.
@@ -2278,7 +2568,7 @@ components:
         transactionId:
           maximum: 99999
           type: integer
-          description: 'Transaction ID associated with the fee, if applicable.'
+          description: "Transaction ID associated with the fee, if applicable."
           format: int64
           readOnly: true
           example: 12345
@@ -2312,7 +2602,7 @@ components:
           readOnly: true
           example: HUBWISE
         tierDetails:
-          $ref: '#/components/schemas/TieredFeeDetails'
+          $ref: "#/components/schemas/TieredFeeDetails"
         status:
           type: string
           description: Current status of the fee.
@@ -2326,13 +2616,13 @@ components:
             - DEFAULT
             - T
             - C
-            - 'Y'
+            - "Y"
         instalmentPlan:
-          $ref: '#/components/schemas/FeeInstalmentPlan'
+          $ref: "#/components/schemas/FeeInstalmentPlan"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
+          $ref: "#/components/schemas/AuditInfo"
       description: Represents a fee charged to an account.
-    
+
     FeeInstalmentPlan:
       type: object
       properties:
@@ -2362,13 +2652,13 @@ components:
       description: >-
         Represents an installment plan for distributing a fee into multiple
         parts.
-    
+
     TieredFeeDetails:
       type: object
       properties:
         bandingType:
           type: string
-          description: 'Defines the banding method: Ribboned (R) or Stepped (S).'
+          description: "Defines the banding method: Ribboned (R) or Stepped (S)."
           readOnly: true
           example: RIBBONED
           enum:
@@ -2400,11 +2690,11 @@ components:
           description: List of individual fee rate bands.
           readOnly: true
           items:
-            $ref: '#/components/schemas/Rate'
+            $ref: "#/components/schemas/Rate"
       description: Detailed configuration for a tiered fee structure.
       readOnly: true
-    
-    AllowanceModel:
+
+    Allowance:
       type: object
       properties:
         remainingAllowance:
@@ -2418,8 +2708,8 @@ components:
           readOnly: true
           example: 0
       description: Investor allowance information
-    
-    ContactDetailsModel:
+
+    ContactDetails:
       type: object
       properties:
         contactPhone:
@@ -2428,21 +2718,21 @@ components:
           type: string
           description: Contact Phone
           format: string
-          example: '01619465555'
+          example: "01619465555"
         homePhone:
           maxLength: 20
           minLength: 0
           type: string
           description: Home Phone
           format: string
-          example: '01619464444'
+          example: "01619464444"
         mobilePhone:
           maxLength: 20
           minLength: 0
           type: string
           description: Mobile Phone
           format: string
-          example: '07877156340'
+          example: "07877156340"
         email:
           maxLength: 256
           minLength: 1
@@ -2450,9 +2740,8 @@ components:
           description: Email
           format: string
           example: john.doe@outlook.com
-      description: Contact Details Model
-    
-    IncomeAndInvestmentModel:
+
+    IncomeAndInvestment:
       required:
         - annualIncome
         - industry
@@ -2596,10 +2885,9 @@ components:
           format: Boolean
           example: true
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Income and Investment Model
-    
-    IndividualModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Individual:
       required:
         - dateOfBirth
         - firstName
@@ -2660,7 +2948,7 @@ components:
           type: string
           description: Date of Birth
           format: date
-          example: '2000-02-20'
+          example: "2000-02-20"
         gender:
           type: string
           description: Gender
@@ -2684,20 +2972,19 @@ components:
             - OTHERDEP
             - UNDISC
         incomeAndInvestment:
-          $ref: '#/components/schemas/IncomeAndInvestmentModel'
+          $ref: "#/components/schemas/IncomeAndInvestment"
         allowance:
-          $ref: '#/components/schemas/AllowanceModel'
+          $ref: "#/components/schemas/Allowance"
         territorialProfile:
-          $ref: '#/components/schemas/TerritorialProfileModel'
+          $ref: "#/components/schemas/TerritorialProfile"
         contactDetails:
-          $ref: '#/components/schemas/ContactDetailsModel'
+          $ref: "#/components/schemas/ContactDetails"
         notificationsPreferences:
-          $ref: '#/components/schemas/NotificationModel'
+          $ref: "#/components/schemas/Notification"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Individual Model
-    
-    InvestorModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Investor:
       required:
         - addresses
         - adviserId
@@ -2767,19 +3054,18 @@ components:
             - NON_UK_RESIDENT
             - FAS
         individual:
-          $ref: '#/components/schemas/IndividualModel'
+          $ref: "#/components/schemas/Individual"
         addresses:
           maxItems: 5
           minItems: 0
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/AddressModel'
+            $ref: "#/components/schemas/Address"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Investor Model
-    
-    NationalityModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Nationality:
       required:
         - countryCode
         - primary
@@ -2805,10 +3091,9 @@ components:
           format: Boolean
           example: true
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Nationality Model
-    
-    NotificationModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Notification:
       type: object
       properties:
         disableEmails:
@@ -2821,9 +3106,8 @@ components:
           description: Sms Notification
           format: Boolean
           example: false
-      description: Notification Model
-    
-    TaxationModel:
+
+    Taxation:
       required:
         - countryCode
         - primary
@@ -2863,10 +3147,9 @@ components:
           format: String
           example: 5493001KJTIIGC8Y1R12
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Taxation Model
-    
-    TerritorialProfileModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    TerritorialProfile:
       required:
         - taxResidencies
       type: object
@@ -2877,16 +3160,15 @@ components:
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/NationalityModel'
+            $ref: "#/components/schemas/Nationality"
         taxResidencies:
           maxItems: 5
           minItems: 1
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/TaxationModel'
-      description: TerritorialProfile Model
-    
+            $ref: "#/components/schemas/Taxation"
+
     ModelHeader:
       required:
         - customerId
@@ -2911,9 +3193,9 @@ components:
           type: string
           description: Model Date
           format: date
-          example: '2020-04-28'
+          example: "2020-04-28"
       description: Model keys associated to account
-    
+
     Movement:
       required:
         - frequency
@@ -2928,7 +3210,7 @@ components:
           example: 2
         type:
           type: string
-          description: 'Type of the movement such as CONTRIBUTIONS, WITHDRAWALS.'
+          description: "Type of the movement such as CONTRIBUTIONS, WITHDRAWALS."
           example: CONTRIBUTIONS
           enum:
             - CONTRIBUTIONS
@@ -2941,7 +3223,7 @@ components:
             - EXISTING_VALUE
         paymentMethod:
           type: string
-          description: 'Payment method for the movement, e.g., ELECTRONIC, CHEQUE.'
+          description: "Payment method for the movement, e.g., ELECTRONIC, CHEQUE."
           example: ELECTRONIC
           enum:
             - ELECTRONIC
@@ -2957,7 +3239,7 @@ components:
             - EMPLOYER
         frequency:
           type: string
-          description: 'Frequency of the movement, e.g., ONE-OFF, MONTHLY.'
+          description: "Frequency of the movement, e.g., ONE-OFF, MONTHLY."
           example: ONE-OFF
           enum:
             - ANNUAL
@@ -2966,9 +3248,9 @@ components:
             - HALF-YEARLY
             - ONE-OFF
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         bank:
-          $ref: '#/components/schemas/bankAccountIdentifier'
+          $ref: "#/components/schemas/BankAccountDetails"
         isGross:
           type: boolean
           description: Flag indicating whether the value is gross or net.
@@ -2982,7 +3264,7 @@ components:
           type: string
           description: Reference associated with this movement.
         fee:
-          $ref: '#/components/schemas/MovementFee'
+          $ref: "#/components/schemas/MovementFee"
         endDate:
           type: string
           description: >-
@@ -3001,9 +3283,9 @@ components:
             goes into Model selected at Account Level.
           example: false
         hrmcProtection:
-          $ref: '#/components/schemas/hrmcProtection'
+          $ref: "#/components/schemas/HMRCProtection"
         sourceOfFund:
-          $ref: '#/components/schemas/sourceOfFund'
+          $ref: "#/components/schemas/SourceOfFund"
         thirdPartyId:
           type: string
           description: >-
@@ -3037,15 +3319,14 @@ components:
             - CREDIT
             - DEBIT
         AuditInfo:
-          $ref: '#/components/schemas/AuditInfo'
+          $ref: "#/components/schemas/AuditInfo"
         paymentHistory:
           type: array
           description: Represents the historical record of a financial movement.
           readOnly: true
           items:
-            $ref: '#/components/schemas/MovementHistory'
-      description: Request to create a new money movement.
-    
+            $ref: "#/components/schemas/MovementHistory"
+
     MovementFee:
       type: object
       properties:
@@ -3059,12 +3340,12 @@ components:
           minimum: 0
           exclusiveMinimum: false
           type: number
-          description: 'Fee as a percentage (e.g., 0.75 = 0.75%).'
+          description: "Fee as a percentage (e.g., 0.75 = 0.75%)."
           example: 0.75
         instalmentPlan:
-          $ref: '#/components/schemas/FeeInstalmentPlan'
+          $ref: "#/components/schemas/FeeInstalmentPlan"
       description: Represents a fee charged to an account.
-    
+
     MovementHistory:
       type: object
       properties:
@@ -3073,7 +3354,7 @@ components:
           description: The date when the movement occurred.
           format: date
           readOnly: true
-          example: '2024-06-01'
+          example: "2024-06-01"
         movementAuditDate:
           type: string
           description: The date when the movement was audited or recorded in the system.
@@ -3086,7 +3367,7 @@ components:
           example: 1500
       description: Represents the historical record of a financial movement.
       readOnly: true
-    
+
     AccountEmployerParty:
       type: object
       properties:
@@ -3097,7 +3378,7 @@ components:
         relationshipId:
           type: string
           readOnly: true
-          example: '3'
+          example: "3"
         relationshipType:
           type: string
           readOnly: true
@@ -3121,13 +3402,12 @@ components:
         phone:
           maxLength: 15
           type: string
-          example: '0221544785'
+          example: "0221544785"
         address:
-          $ref: '#/components/schemas/RelationshipAddressModel'
+          $ref: "#/components/schemas/RelationshipAddress"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Related party for ACCOUNT_EMPLOYER
-    
+          $ref: "#/components/schemas/AuditInfo"
+
     BeneficiaryParty:
       type: object
       properties:
@@ -3138,7 +3418,7 @@ components:
         relationshipId:
           type: string
           readOnly: true
-          example: '3'
+          example: "3"
         relationshipType:
           type: string
           readOnly: true
@@ -3162,7 +3442,7 @@ components:
         dateOfBirth:
           type: string
           format: date
-          example: '2000-04-04'
+          example: "2000-04-04"
         relation:
           maxLength: 20
           type: string
@@ -3178,13 +3458,12 @@ components:
         phone:
           maxLength: 15
           type: string
-          example: '0221544785'
+          example: "0221544785"
         address:
-          $ref: '#/components/schemas/RelationshipAddressModel'
+          $ref: "#/components/schemas/RelationshipAddress"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Beneficiary Party
-    
+          $ref: "#/components/schemas/AuditInfo"
+
     PowerOfAttorneyParty:
       type: object
       properties:
@@ -3195,7 +3474,7 @@ components:
         relationshipId:
           type: string
           readOnly: true
-          example: '3'
+          example: "3"
         relationshipType:
           type: string
           readOnly: true
@@ -3223,14 +3502,13 @@ components:
         phone:
           maxLength: 15
           type: string
-          example: '0221544785'
+          example: "0221544785"
         address:
-          $ref: '#/components/schemas/RelationshipAddressModel'
+          $ref: "#/components/schemas/RelationshipAddress"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Power Of Attorney Party
-    
-    RelationshipAddressModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    RelationshipAddress:
       required:
         - countryCode
         - line1
@@ -3259,7 +3537,7 @@ components:
           minLength: 0
           type: string
           description: Address line 2
-          example: '4 Exchange Quay, Salford Quay'
+          example: "4 Exchange Quay, Salford Quay"
         town:
           maxLength: 75
           minLength: 0
@@ -3283,59 +3561,28 @@ components:
           description: Postcode
           example: M5 3EE
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-    
-    RelationshipModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Relationship:
       type: object
       properties:
         beneficiaries:
           type: array
           description: Death Beneficiary details
           items:
-            $ref: '#/components/schemas/BeneficiaryParty'
+            $ref: "#/components/schemas/BeneficiaryParty"
         powerOfAttorneys:
           type: array
           description: Power of attorney details
           items:
-            $ref: '#/components/schemas/PowerOfAttorneyParty'
+            $ref: "#/components/schemas/PowerOfAttorneyParty"
         accountEmployers:
           type: array
           description: Employer details
           items:
-            $ref: '#/components/schemas/AccountEmployerParty'
-      description: Relationship model
-    
-    bankAccountIdentifier:
-      type: object
-      properties:
-        bankAccountNumber:
-          maxLength: 10
-          minLength: 0
-          type: string
-          description: Bank account number
-          example: '50220369'
-        bankSortCode:
-          maxLength: 6
-          pattern: '\d{6}'
-          type: string
-          description: Sort code (6-digit UK format)
-          example: '700125'
-        iban:
-          maxLength: 34
-          minLength: 0
-          type: string
-          description: IBAN (International Bank Account Number)
-          example: GB29NWBK60161331926819
-        providerId:
-          maxLength: 50
-          type: string
-          description: >-
-            The provider Id the PSU will use for this payment, primarily used
-            for True Layer Bank Identifier
-          example: ob-bank-name
-      description: Details of bank associated to the account or movement.
-    
-    hrmcProtection:
+            $ref: "#/components/schemas/AccountEmployerParty"
+
+    HMRCProtection:
       type: object
       properties:
         hmrcProtection:
@@ -3370,8 +3617,8 @@ components:
             draw-downs only.
           example: FP123451231233A
       description: Represents all HRMC protection rules.
-    
-    sourceOfFund:
+
+    SourceOfFund:
       type: object
       properties:
         type:
@@ -3393,15 +3640,6 @@ components:
             - SALE_OF_INVESTMENTS
             - SALE_OF_PROPERTY_OR_BUSINESS
             - SAVINGS
-        fields:
-          $ref: '#/components/schemas/fields'
-      description: >-
-        This provides details explaining the source of funds for AML (Anti-Money
-        Laundering).
-    
-    fields:
-      type: object
-      properties:
         annualSalary:
           type: number
           description: The annual salary associated with this source of fund (optional).
@@ -3418,11 +3656,11 @@ components:
             The nature of the business or industry related to this source of
             fund (optional).
           example: Financial Services
-        'amountReceived ':
+        amountReceived:
           type: number
           description: the amount received from this source of fund (optional).
           example: 5000
-        'frequency ':
+        frequency:
           type: string
           description: >-
             The frequency at which funds are received from this source
@@ -3432,11 +3670,11 @@ components:
           type: string
           description: The name of the donor if the source of fund is a gift (optional).
           example: John Doe
-        'dateReceived ':
+        dateReceived:
           type: string
           description: The date when the funds were received from this source (optional).
           format: date
-          example: '2024-01-15'
+          example: "2024-01-15"
         benefactorName:
           type: string
           description: >-
@@ -3540,9 +3778,11 @@ components:
           type: string
           description: A short description of the source of funds.
           example: Savings
-      description: ' This is  provide a structure for the source of fund fields.'
-    
-    AccountTransferModel:
+      description: >-
+        This provides details explaining the source of funds for AML (Anti-Money
+        Laundering).
+
+    AccountTransfer:
       required:
         - actualEstimated
         - frequency
@@ -3590,7 +3830,7 @@ components:
             - IN
             - OUT
         cedingProvider:
-          $ref: '#/components/schemas/CedingProviderModel'
+          $ref: "#/components/schemas/CedingProvider"
         registeredHolderName:
           maxLength: 70
           type: string
@@ -3600,9 +3840,9 @@ components:
           maxLength: 20
           type: string
           description: Transfer reference number
-          example: '896546'
+          example: "896546"
         value:
-          $ref: '#/components/schemas/Value'
+          $ref: "#/components/schemas/Value"
         actualEstimated:
           type: string
           description: Actual or Estimated
@@ -3648,18 +3888,18 @@ components:
           description: Date of movement in YYYY-MM-DD format
           format: date
           readOnly: true
-          example: '2025-04-15'
+          example: "2025-04-15"
         isPartial:
           type: boolean
           description: >-
-            ‘Choose whether a cash transfer is full or partial. Not applicable
+            Choose whether a cash transfer is full or partial. Not applicable
             for in-specie transfers
           example: false
         crystallisedValue:
           maxLength: 11
           type: number
           description: |
-              Applicable for pension products
+            Applicable for pension products
           example: 0
         uncrystallisedValue:
           maxLength: 11
@@ -3698,26 +3938,25 @@ components:
           description: Current year subscription value
           example: 0
         fee:
-          $ref: '#/components/schemas/MovementFee'
+          $ref: "#/components/schemas/MovementFee"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Account Transfer model
-    
-    CorrespondenceChangeHeaderModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    CorrespondenceHeader:
       type: object
       properties:
         correspondences:
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/VulnerabilityCorrespondenceModel'
+            $ref: "#/components/schemas/VulnerabilityCorrespondence"
         declarations:
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/DeclarationModel'
-    
-    VulnerabilityChangeHeaderModel:
+            $ref: "#/components/schemas/Declaration"
+
+    VulnerabilityHeader:
       type: object
       properties:
         investorId:
@@ -3734,14 +3973,14 @@ components:
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/VulnerabilityModel'
+            $ref: "#/components/schemas/Vulnerability"
         declarations:
           type: array
           format: Object
           items:
-            $ref: '#/components/schemas/DeclarationModel'
-    
-    VulnerabilityCorrespondenceModel:
+            $ref: "#/components/schemas/Declaration"
+
+    VulnerabilityCorrespondence:
       type: object
       properties:
         type:
@@ -3760,19 +3999,18 @@ components:
           type: string
           description: Vulnerabilities start date
           format: date
-          example: '2025-01-01'
+          example: "2025-01-01"
         expiryDate:
           type: string
           description: Vulnerabilities expiry date
           format: date
-          example: '2026-01-01'
+          example: "2026-01-01"
         adviserId:
           type: string
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Investor Vulnerability Correspondence Model
-    
-    VulnerabilityModel:
+          $ref: "#/components/schemas/AuditInfo"
+
+    Vulnerability:
       type: object
       properties:
         type:
@@ -3811,20 +4049,18 @@ components:
           type: string
           description: Vulnerabilities start date
           format: date
-          example: '2025-01-01'
+          example: "2025-01-01"
         expiryDate:
           type: string
           description: Vulnerabilities expiry date
           format: date
-          example: '2026-01-01'
+          example: "2026-01-01"
         adviserId:
           type: string
         AuditInfo:
-          $ref: '#/components/schemas/AuditInfo'
-      description: Investor Vulnerability Model
-  
-  examples:
+          $ref: "#/components/schemas/AuditInfo"
 
+  examples:
     400-BadRequest-Path:
       summary: Path parameter does not conform to API schema
       value:
@@ -3851,15 +4087,14 @@ components:
             message: Invalid email address format
           - jsonPath: $.store.book[2].publishDateTime
             message: Dates should be in ISO8601 format
-  
-  responses:              
-    
+
+  responses:
     401-Unorthorized:
       description: Unauththenticated request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           examples:
             Ex1:
               summary: Invalid API token
@@ -3877,7 +4112,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           examples:
             Ex1:
               summary: Requester not allowed access to the resource
@@ -3891,7 +4126,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           examples:
             Ex1:
               summary: Resource not found
@@ -3905,7 +4140,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           examples:
             Ex1:
               summary: Unexpected technical error.
@@ -3913,9 +4148,9 @@ components:
                 errorCode: HWA-EXCEPTION-003
                 message: |-
                   An unexpected technical error occurred. 
-                  
-                  
-                  Do not retry the call before the time specified in the Retry-After HTTP response header. If no Retry-After header is returned, do not retry the call. 
+
+
+                  Do not retry the call before the time specified in the Retry-After HTTP response header. If no Retry-After header is returned, do not retry the call.
 
   securitySchemes:
     bearer-token:
