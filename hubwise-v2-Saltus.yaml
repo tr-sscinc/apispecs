@@ -709,15 +709,25 @@ paths:
       summary: Query accounts
       description: |
         This endpoint retrieves the full details of an account that the requester is authorised to access
-        - Supported Filters:
-          - `name` - Partial match on the account name (minimum 2 characters).
-          - `accountId`- Partial match on the account ID (minimum 2 characters).
-          - `investorId`- Exact match only.
-          - `status`- Exact match on account status (e.g. NEW, PENDING). Refer to the Model section for the full list of supported values.
-          - `sortColumn`- Allows sorting by any field (e.g. createdOnDate, name). See the Model section for the full list of sortable fields.
-        - Additional Features:
-          - `Pagination` - Limit and offset controls for navigating large result sets.
-          - `Sorting` - Sort results by any supported field.
+        
+        
+          - Filters:
+        
+            - `name` - Partial match on the account name (minimum 2 characters).
+        
+            - `accountId`- Partial match on the account ID (minimum 2 characters).
+        
+            - `investorId`- Exact match only.
+        
+            - `status`- Exact match on account status (e.g. NEW, PENDING). Refer to the Model section for the full list of supported values.
+        
+            - `sortColumn`- Allows sorting by any field (e.g. createdOnDate, name). See the Model section for the full list of sortable fields.
+        
+          - Pagination controls:
+        
+            - `Pagination` - Limit and offset controls for navigating large result sets.
+        
+            - `Sorting` - Sort results by any supported field.
       operationId: searchAccounts
       parameters:
         - name: name
@@ -729,7 +739,6 @@ paths:
             minLength: 2
             type: string
             description: "Filter accounts by name, this is a predictive search"
-            example: HUB
           example: HUB
         - name: accountId
           in: query
@@ -744,7 +753,6 @@ paths:
             description: >-
               Search using unique identifier of the account, this is a
               predictive search
-            example: HW00013451A
           example: HW00013451A
         - name: investorId
           in: query
@@ -755,40 +763,33 @@ paths:
             minLength: 11
             type: string
             description: Investor ID linked to the account
-            example: INV12345678
           example: INV12345678
         - name: status
           in: query
           description: Status of the Account
           required: false
           schema:
-            pattern: NEW|DELETED|SUSPENDED|INCEPTED|PENDING
             type: string
             description: Status of the Account
-            example: NEW
             enum:
               - NEW
               - DELETED
               - SUSPENDED
               - INCEPTED
               - PENDING
-          example: NEW
         - name: sortColumn
           in: query
           description: Column on which to sort data
           required: false
           schema:
-            pattern: createdOnDate|name|accountId|status|productId
             type: string
             description: Column on which to sort data
-            example: createdOnDate
             enum:
               - createdOnDate
               - name
               - accountId
               - status
               - productId
-          example: createdOnDate
         - name: sortDirection
           in: query
           description: >-
@@ -800,7 +801,6 @@ paths:
             description: >-
               Sort direction for results. Use 'ASC' for ascending or 'DESC' for
               descending.
-            example: DESC
             default: DESC
             enum:
               - ASC
